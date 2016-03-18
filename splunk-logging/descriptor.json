@@ -1,0 +1,23 @@
+{  
+   "lambda":{  
+      "FunctionName":"splunk-logging",
+      "Handler":"index.handler",
+      "Runtime":"nodejs",
+      "Description":"Demonstrates logging events to Splunk's HTTP Event Collector",
+      "MemorySize":512,
+      "Timeout":10
+   },
+   "version":"0.5.0",
+   "build":"[url_of_zipfile]",
+   "license":"Apache-2.0",
+   "tags":[  
+      "nodejs",
+      "splunk"
+   ],
+   "authors":[  
+      "Glenn Block <gblock@splunk.com> (https://www.splunk.com)",
+      "Roy Arsan <rarsan@splunk.com> (https://www.splunk.com)",
+      "Dritan Bitincka <dbitincka@splunk.cm> (https://www.splunk.com)"
+    ],
+   "private":true
+}
