@@ -70,7 +70,7 @@ var Logger = function(context) {
     function log() {
         var time = Date.now();
         var args = [time].concat(Array.prototype.slice.call(arguments));
-        logWithTime.apply(args);
+        logWithTime.apply(null, args);
     }
     
     function logWithTime() {
