@@ -1,0 +1,19 @@
+{
+  "name": "splunk-lambda",
+  "version": "0.1.0",
+  "description": "Log events from AWS Lambda to Splunk's HTTP Event Collector",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "splunk",
+    "lambda",
+    "hec"
+  ],
+  "author": "Roy Arsan <rarsan@splunk.com> (https://www.splunk.com)",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "splunk-logging": "^0.9.1"
+  }
+}
