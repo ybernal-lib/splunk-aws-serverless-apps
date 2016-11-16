@@ -25,7 +25,7 @@ var SplunkLogger = require("./lib/mysplunklogger");
 var logger = new SplunkLogger(loggerConfig);
 
 // User code
-exports.handler = function(event, context, callback) {
+exports.handler = (event, context, callback) => {
     //log strings
     logger.log(`value1 = ${event.key1}`, context);
     logger.log(`value2 = ${event.key2}`, context);
