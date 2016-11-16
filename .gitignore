@@ -1,4 +1,7 @@
-*.zip
 node_modules
-
 .DS_Store
+
+# Artifacts from build & test
+*.zip
+wrapper.js
+lib
