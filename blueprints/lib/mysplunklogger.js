@@ -57,7 +57,7 @@ Logger.prototype.flushAsync = function(callback) {
         port: parsed.port,
         method: 'POST',
         headers: {
-            'Authorization': "Splunk " + this.token
+            'Authorization': `Splunk ${this.token}`
         },
         rejectUnauthorized: false,
     };
@@ -71,7 +71,7 @@ Logger.prototype.flushAsync = function(callback) {
         res.on('data', data => {
             var error = null;
             if (res.statusCode != 200) {
-                error = new Error("error: statusCode=" + res.statusCode + "\n\n" + data);
+                error = new Error(`error: statusCode=${res.statusCode}\n\n${data}`);
                 console.error(error);
             } else {
                 console.log('Sent');
