@@ -23,7 +23,6 @@ var loggerConfig = {
 var SplunkLogger = require("./lib/mysplunklogger");
 var logger = new SplunkLogger(loggerConfig);
 
-// User code
 exports.handler = (event, context, callback) => {
     console.log('Received event:', JSON.stringify(event, null, 2));
     event.Records.forEach((record) => {

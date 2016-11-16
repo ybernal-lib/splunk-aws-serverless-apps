@@ -24,7 +24,6 @@ var zlib = require('zlib');
 var SplunkLogger = require("./lib/mysplunklogger");
 var logger = new SplunkLogger(loggerConfig);
 
-// User code
 exports.handler = (event, context, callback) => {
     // CloudWatch Logs data is base64 encoded so decode here
     var payload = new Buffer(event.awslogs.data, 'base64');
