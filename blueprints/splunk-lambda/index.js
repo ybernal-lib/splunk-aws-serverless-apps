@@ -19,8 +19,8 @@
 var Logger = require("./lib/mysplunklogger");
 
 var loggerConfig = {
-    url: "https://localhost:8088/services/collector",
-    token: "31B1B444-0DD4-46C5-BC01-FCC0C8819E7D"
+    url: 'https://<HOST>:<PORT>/services/collector',
+    token: '<TOKEN>'
 };
  
 var logger = new Logger(loggerConfig);
