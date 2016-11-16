@@ -16,14 +16,13 @@
  * http://docs.splunk.com/Documentation/Splunk/latest/Data/UsetheHTTPEventCollector#Create_an_Event_Collector_token
  */
 
-var Logger = require("./lib/mysplunklogger");
-
 var loggerConfig = {
-    url: 'https://<HOST>:<PORT>/services/collector',
-    token: '<TOKEN>'
+    url: process.env['SPLUNK_HEC_URL'] || 'https://<HOST>:<PORT>/services/collector',
+    token: process.env['SPLUNK_HEC_TOKEN'] || '<TOKEN>'
 };
- 
-var logger = new Logger(loggerConfig);
+
+var SplunkLogger = require("./lib/mysplunklogger");
+var logger = new SplunkLogger(loggerConfig);
 
 // User code
 exports.handler = function(event, context, callback) {
