@@ -1,5 +1,5 @@
 {
-  "name": "splunk-iot-plugin",
+  "name": "splunk-iot-processor",
   "version": "0.1.0",
   "description": "Stream events from AWS IoT to Splunk's HTTP event collector using AWS Lambda",
   "main": "index.js",

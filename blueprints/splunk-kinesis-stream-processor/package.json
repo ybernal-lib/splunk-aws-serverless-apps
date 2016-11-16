@@ -1,5 +1,5 @@
 {
-  "name": "splunk-kinesis-stream-plugin",
+  "name": "splunk-kinesis-stream-processor",
   "version": "0.1.0",
   "description": "Stream events from AWS Kinesis to Splunk's HTTP event collector using AWS Lambda",
   "main": "index.js",

@@ -1,5 +1,5 @@
 {
-  "name": "splunk-cloudwatch-logs-plugin",
+  "name": "splunk-cloudwatch-logs-processor",
   "version": "0.1.0",
   "description": "Stream events from AWS CloudWatch Logs to Splunk's HTTP event collector",
   "main": "index.js",
