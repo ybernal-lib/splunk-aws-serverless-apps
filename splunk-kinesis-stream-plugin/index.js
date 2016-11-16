@@ -186,6 +186,6 @@ exports.handler = function(event, context) {
         }
     });
     logger.flushAsync(function() {
-        context.succeed("Successfully processed " + event.Records.length + " records.");
+        context.succeed("Successfully processed " + event.Records.length + " record(s).");
     });
 };
