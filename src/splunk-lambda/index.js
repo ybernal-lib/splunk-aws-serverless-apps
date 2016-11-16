@@ -36,15 +36,15 @@
  * https://github.com/splunk/splunk-javascript-logging
  */
 
-var SplunkLogger = require("./splunklogger-lambda");
-
 var loggerConfig = {
-    url: "https://<HOST>:<PORT>/services/collector",
-    token: "<TOKEN>",
-    batchInterval: 500 // batch & flush events every 500ms
+    url: process.env['SPLUNK_HEC_URL'] || 'https://<HOST>:<PORT>/services/collector',
+    token: process.env['SPLUNK_HEC_TOKEN'] || '<TOKEN>',
+    batchInterval: 100 // batch & flush events every 100ms
 };
  
+var SplunkLogger = require("./lib/splunklogger-lambda");
 var logger = new SplunkLogger(loggerConfig);
+
 // Override default built-in eventFormatter function
 logger.eventFormatter = function(message, severity) {
     return message;
@@ -53,18 +53,22 @@ logger.eventFormatter = function(message, severity) {
 // User code
 exports.handler = function(event, context, callback) { 
     //log strings
-    // logger.send('value1 =', event.key1);
-    // logger.send('value2 =', event.key2);
-    // logger.send('value3 =', event.key3);
+    logger.log(`value1 = ${event.key1}`, context);
+    logger.log(`value2 = ${event.key2}`, context);
+    logger.log(`value3 = ${event.key3}`, context);
     
     //log JSON objects
     logger.log(event, context);
-    
+
     //specify the timestamp explicitly, useful for forwarding events like from AWS IOT
-    //logger.logWithTime(Date.now(), event, context);
+    logger.logWithTime(Date.now(), event, context);
 
     //send all the events in a single batch to Splunk
-    logger.flushAsync(function() {
-        callback(event.key1);  // Echo back the first key value
+    logger.flushAsync((error, response) => {
+        if (error) {
+            callback(error);
+        } else {
+            callback(null, event.key1); // Echo back the first key value
+        }
     });
 };

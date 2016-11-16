@@ -16,6 +16,8 @@
     "Roy Arsan <rarsan@splunk.com> (https://www.splunk.com)",
     "Glenn Block <gblock@splunk.com> (https://www.splunk.com)"
   ],
-  "license": "CC0",
-  "dependencies": {} 
+  "license": "Apache-2.0",
+  "dependencies": {
+    "splunk-logging": "^0.9.1"
+  }
 }

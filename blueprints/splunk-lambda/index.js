@@ -33,7 +33,6 @@ exports.handler = function(event, context, callback) {
     
     //log JSON objects
     logger.log(event, context);
-    console.log(event);
 
     //specify the timestamp explicitly, useful for forwarding events like from AWS IOT
     logger.logWithTime(Date.now(), event, context);
