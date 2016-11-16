@@ -1,7 +1,7 @@
 {
-  "name": "splunk-lambda",
+  "name": "splunk-logging",
   "version": "0.1.0",
-  "description": "Log events from AWS Lambda to Splunk's HTTP event collector",
+  "description": "Log from AWS Lambda code to Splunk's HTTP event collector",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
