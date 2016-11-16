@@ -1,11 +1,10 @@
 /**
  * Stream events from AWS Kinesis to Splunk
  *
- * This function streams AWS Kinesis events to a Splunk host using
- * Splunk's event collector API.
+ * This function streams AWS Kinesis events to Splunk using
+ * Splunk's HTTP event collector API.
  *
- * Follow these steps to configure the function to stream AWS Kinesis events 
- * to your Splunk host:
+ * Follow these steps to configure this function:
  *
  * 1. Enter url address for your Splunk HTTP event collector endpoint.
  * Default port for event collector is 8088. Make sure no firewalls would prevent
