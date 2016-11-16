@@ -4,8 +4,10 @@ var url = require('url');
 var Logger = function(config) {
     this.url = config.url;
     this.token = config.token;
+    
     this.addMetadata = true;
     this.setSource = true;
+
     this.payloads = [];
 };
 
@@ -46,7 +48,7 @@ Logger.prototype.logEvent = function(payload) {
 };
 
 Logger.prototype.flushAsync = function(callback) {
-    callback = callback || function(){};
+    callback = callback || (() => {});
 
     var parsed = url.parse(this.url);
     var options = {
@@ -62,11 +64,11 @@ Logger.prototype.flushAsync = function(callback) {
     var requester = require(parsed.protocol.substring(0, parsed.protocol.length - 1));
 
     console.log('Sending event');
-    var req = requester.request(options, function(res) {
+    var req = requester.request(options, res => {
         res.setEncoding('utf8');
 
         console.log('Response received');
-        res.on('data', function(data) {
+        res.on('data', data => {
             var error = null;
             if (res.statusCode != 200) {
                 error = new Error("error: statusCode=" + res.statusCode + "\n\n" + data);
@@ -76,12 +78,12 @@ Logger.prototype.flushAsync = function(callback) {
             }
             this.payloads.length = 0;
             callback(error, data);
-        }.bind(this));
-    }.bind(this));
+        });
+    });
 
-    req.on('error', function(error) {
+    req.on('error', error => {
         callback(error);
-    }.bind(this));
+    });
 
     req.end(this.payloads.join(''), 'utf8');
 };
