@@ -34,7 +34,7 @@ Logger.prototype.logWithTime = function(time, message, context) {
             }
         }
         if (this.setSource) {
-            payload.source = context.functionName;
+            payload.source = `lambda:${context.functionName}`;
         }
     }
 
