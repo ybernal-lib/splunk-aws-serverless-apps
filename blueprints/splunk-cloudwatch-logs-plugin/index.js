@@ -21,7 +21,6 @@ var loggerConfig = {
 };
 
 var zlib = require('zlib');
-
 var SplunkLogger = require("./lib/mysplunklogger");
 var logger = new SplunkLogger(loggerConfig);
 

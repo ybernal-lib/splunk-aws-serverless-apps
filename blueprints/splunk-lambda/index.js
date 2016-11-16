@@ -1,7 +1,7 @@
 /**
  * Splunk logging for AWS Lambda
  *
- * This function logs to a Splunk host using Splunk's event collector
+ * This function logs to a Splunk host using Splunk's HTTP event collector
  * API.
  *
  * Follow these steps to configure the function to log to your Splunk
