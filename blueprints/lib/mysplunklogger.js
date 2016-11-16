@@ -4,6 +4,8 @@ var url = require('url');
 var Logger = function(config) {
     this.url = config.url;
     this.token = config.token;
+    this.addMetadata = true;
+    this.setSource = true;
     this.payloads = [];
 };
 
@@ -18,17 +20,20 @@ Logger.prototype.logWithTime = function(time, message, context) {
     if (Object.prototype.toString.call(message) === '[object Array]') {
         throw new Error("message argument must be a string or a JSON object.");
     }
-
     payload.event = message;
 
-    // Add Lambda metadata if available
-    // TODO: only add if message is JSON object
+    // Add Lambda metadata
     if (typeof context !== 'undefined') {
-        var reqId = context.awsRequestId;
-        if (typeof reqId !== 'undefined') {
-            payload.event.awsRequestId = context.awsRequestId;
+        if (this.addMetadata) {
+            // Enrich event only if it is an object
+            if (message === Object(message)) {
+                payload.event = JSON.parse(JSON.stringify(message)); // deep copy
+                payload.event.awsRequestId = context.awsRequestId;
+            }
         }
-        payload.source = context.functionName;
+        if (this.setSource) {
+            payload.source = context.functionName;
+        }
     }
 
     payload.time = new Date(time).getTime() / 1000;
