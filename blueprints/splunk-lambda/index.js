@@ -34,7 +34,8 @@ exports.handler = (event, context, callback) => {
     //log JSON objects
     logger.log(event, context);
 
-    //specify the timestamp explicitly, useful for forwarding events like from AWS IOT
+    //specify the timestamp explicitly, useful for forwarding events with embedded
+    //timestamps like from AWS IoT, AWS Kinesis, AWS CloudWatch Logs
     logger.logWithTime(Date.now(), event, context);
 
     //send all the events in a single batch to Splunk
