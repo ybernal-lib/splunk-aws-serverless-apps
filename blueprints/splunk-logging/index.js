@@ -45,7 +45,7 @@ exports.handler = (event, context, callback) => {
         if (error) {
             callback(error);
         } else {
-            console.log(`Successful response from Splunk received:\n${response}`);
+            console.log(`Response from Splunk:\n${response}`);
             callback(null, event.key1); // Echo back the first key value
         }
     });
