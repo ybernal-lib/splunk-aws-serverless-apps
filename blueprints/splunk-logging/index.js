@@ -16,20 +16,23 @@
  * http://docs.splunk.com/Documentation/Splunk/latest/Data/UsetheHTTPEventCollector#Create_an_Event_Collector_token
  */
 
-var loggerConfig = {
-    url: process.env['SPLUNK_HEC_URL'] || 'https://<HOST>:<PORT>/services/collector',
-    token: process.env['SPLUNK_HEC_TOKEN'] || '<TOKEN>'
+'use strict';
+
+const loggerConfig = {
+    url: process.env.SPLUNK_HEC_URL || 'https://<HOST>:<PORT>/services/collector',
+    token: process.env.SPLUNK_HEC_TOKEN || '<TOKEN>',
 };
 
-var SplunkLogger = require("./lib/mysplunklogger");
-var logger = new SplunkLogger(loggerConfig);
+const SplunkLogger = require('./lib/mysplunklogger');
+
+const logger = new SplunkLogger(loggerConfig);
 
 exports.handler = (event, context, callback) => {
     //log strings
     logger.log(`value1 = ${event.key1}`, context);
     logger.log(`value2 = ${event.key2}`, context);
     logger.log(`value3 = ${event.key3}`, context);
-    
+
     //log JSON objects
     logger.log(event, context);
 
@@ -42,6 +45,7 @@ exports.handler = (event, context, callback) => {
         if (error) {
             callback(error);
         } else {
+            console.log(`Successful response from Splunk received:\n${response}`);
             callback(null, event.key1); // Echo back the first key value
         }
     });
