@@ -1,7 +1,7 @@
 
-var url = require('url');
+const url = require('url');
 
-var Logger = function(config) {
+const Logger = function(config) {
     this.url = config.url;
     this.token = config.token;
     
@@ -17,7 +17,7 @@ Logger.prototype.log = function(message, context) {
 };
 
 Logger.prototype.logWithTime = function(time, message, context) {
-    var payload = {};
+    const payload = {};
 
     if (Object.prototype.toString.call(message) === '[object Array]') {
         throw new Error("message argument must be a string or a JSON object.");
@@ -50,8 +50,8 @@ Logger.prototype.logEvent = function(payload) {
 Logger.prototype.flushAsync = function(callback) {
     callback = callback || (() => {});
 
-    var parsed = url.parse(this.url);
-    var options = {
+    const parsed = url.parse(this.url);
+    const options = {
         hostname: parsed.hostname,
         path: parsed.path,
         port: parsed.port,
@@ -61,15 +61,15 @@ Logger.prototype.flushAsync = function(callback) {
         },
         rejectUnauthorized: false,
     };
-    var requester = require(parsed.protocol.substring(0, parsed.protocol.length - 1));
+    const requester = require(parsed.protocol.substring(0, parsed.protocol.length - 1));
 
     console.log('Sending event');
-    var req = requester.request(options, res => {
+    const req = requester.request(options, res => {
         res.setEncoding('utf8');
 
         console.log('Response received');
         res.on('data', data => {
-            var error = null;
+            let error = null;
             if (res.statusCode != 200) {
                 error = new Error(`error: statusCode=${res.statusCode}\n\n${data}`);
                 console.error(error);
