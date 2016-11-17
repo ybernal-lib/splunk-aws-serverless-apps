@@ -28,19 +28,19 @@ const SplunkLogger = require('./lib/mysplunklogger');
 const logger = new SplunkLogger(loggerConfig);
 
 exports.handler = (event, context, callback) => {
-    //log strings
+    // Log strings
     logger.log(`value1 = ${event.key1}`, context);
     logger.log(`value2 = ${event.key2}`, context);
     logger.log(`value3 = ${event.key3}`, context);
 
-    //log JSON objects
+    // Log JSON objects
     logger.log(event, context);
 
-    //specify the timestamp explicitly, useful for forwarding events with embedded
-    //timestamps like from AWS IoT, AWS Kinesis, AWS CloudWatch Logs
+    // Specify the timestamp explicitly, useful for forwarding events with embedded
+    // timestamps like from AWS IoT, AWS Kinesis, AWS CloudWatch Logs
     logger.logWithTime(Date.now(), event, context);
 
-    //send all the events in a single batch to Splunk
+    // Send all the events in a single batch to Splunk
     logger.flushAsync((error, response) => {
         if (error) {
             callback(error);

@@ -35,17 +35,17 @@ exports.handler = (event, context, callback) => {
 
         try {
             splunkEvent = JSON.parse(data);
-            //change "item.timestamp" below if time is represented in another field in the event.
-            //change to use logger.log() if no time field is present in event.
+            // Change "item.timestamp" below if time is represented in another field in the event
+            // Change to use logger.log() if no time field is present in event
             logger.logWithTime(splunkEvent.time, splunkEvent, context);
         } catch (exception) {
             splunkEvent = data;
-            //change to use logWithTime() below if you want to pass in the timestamp from your event
+            // Change to use logWithTime() below if you want to pass in the timestamp from your event
             logger.log(splunkEvent, context);
         }
     });
 
-     //send all the events in a single batch to Splunk
+    // Send all the events in a single batch to Splunk
     logger.flushAsync((error, response) => {
         if (error) {
             callback(error);

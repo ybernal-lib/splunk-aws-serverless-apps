@@ -39,13 +39,13 @@ exports.handler = (event, context, callback) => {
             let count = 0;
             if (parsed.logEvents) {
                 parsed.logEvents.forEach((item) => {
-                    // If applicable, change `item.timestamp` below to correct time field from your event
-                    // If no time field present in event, use "logger.log" instead
+                    // Change "item.timestamp" below if time is represented in another field in the event
+                    // Change to use logger.log() if no time field is present in event
                     logger.logWithTime(item.timestamp, item.message, context);
                     count += 1;
                 });
             }
-            //send all the events in a single batch to Splunk
+            // Send all the events in a single batch to Splunk
             logger.flushAsync((error, response) => {
                 if (error) {
                     callback(error);
