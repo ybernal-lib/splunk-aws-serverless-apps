@@ -31,7 +31,7 @@ exports.handler = (event, context, callback) => {
     console.log('Received event:', JSON.stringify(event, null, 2));
     event.Records.forEach((record) => {
         console.log('DynamoDB Record: %j', record.dynamodb);
-        // Send record as JSON object with context object for additional metadata
+        // Send record JSON object (with context object for additional metadata)
         logger.log(record, context);
     });
 

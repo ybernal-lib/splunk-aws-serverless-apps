@@ -39,6 +39,7 @@ exports.handler = (event, context, callback) => {
             let count = 0;
             if (parsed.logEvents) {
                 parsed.logEvents.forEach((item) => {
+                    // Send item JSON object (with context object for additional metadata)
                     // Change "item.timestamp" below if time is represented in another field in the event
                     // Change to use logger.log() if no time field is present in event
                     logger.logWithTime(item.timestamp, item.message, context);

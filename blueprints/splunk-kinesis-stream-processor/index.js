@@ -31,17 +31,18 @@ exports.handler = (event, context, callback) => {
     event.Records.forEach((record) => {
         // Kinesis data is base64 encoded so decode here
         const data = new Buffer(record.kinesis.data, 'base64').toString('ascii');
-        let splunkEvent = null;
+        let item = null;
 
         try {
-            splunkEvent = JSON.parse(data);
-            // Change "item.timestamp" below if time is represented in another field in the event
+            item = JSON.parse(data);
+            // Send item JSON object (with context object for additional metadata)
+            // Change "item.time" below if time is represented in another field in the event
             // Change to use logger.log() if no time field is present in event
-            logger.logWithTime(splunkEvent.time, splunkEvent, context);
+            logger.logWithTime(item.time, item, context);
         } catch (exception) {
-            splunkEvent = data;
+            item = data;
             // Change to use logWithTime() below if you want to pass in the timestamp from your event
-            logger.log(splunkEvent, context);
+            logger.log(item, context);
         }
     });
 

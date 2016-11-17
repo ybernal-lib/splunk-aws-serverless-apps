@@ -34,6 +34,9 @@ exports.handler = (event, context, callback) => {
     logger.log(`value3 = ${event.key3}`, context);
 
     // Log JSON objects
+    logger.log(event);
+
+    // Log JSON objects with context object for additional Lambda metadata such as awsRequestId
     logger.log(event, context);
 
     // Specify the timestamp explicitly, useful for forwarding events with embedded

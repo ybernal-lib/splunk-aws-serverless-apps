@@ -43,7 +43,7 @@ const logger = new SplunkLogger(loggerConfig);
 exports.handler = (event, context, callback) => {
     console.log('Received event:', JSON.stringify(event, null, 2));
 
-    // Send entire JSON object
+    // Send event JSON object with context object for additional metadata
     logger.log(event, context);
 
     // Specify the timestamp explicitly, useful for forwarding events with embedded
