@@ -1,10 +1,11 @@
+'use strict';
 
 const url = require('url');
 
-const Logger = function(config) {
+const Logger = function Logger(config) {
     this.url = config.url;
     this.token = config.token;
-    
+
     this.addMetadata = true;
     this.setSource = true;
 
@@ -12,15 +13,15 @@ const Logger = function(config) {
 };
 
 // Simple logging API for Lambda functions
-Logger.prototype.log = function(message, context) {
+Logger.prototype.log = function log(message, context) {
     this.logWithTime(Date.now(), message, context);
 };
 
-Logger.prototype.logWithTime = function(time, message, context) {
+Logger.prototype.logWithTime = function logWithTime(time, message, context) {
     const payload = {};
 
     if (Object.prototype.toString.call(message) === '[object Array]') {
-        throw new Error("message argument must be a string or a JSON object.");
+        throw new Error('message argument must be a string or a JSON object.');
     }
     payload.event = message;
 
@@ -43,12 +44,12 @@ Logger.prototype.logWithTime = function(time, message, context) {
     this.logEvent(payload);
 };
 
-Logger.prototype.logEvent = function(payload) {
+Logger.prototype.logEvent = function logEvent(payload) {
     this.payloads.push(JSON.stringify(payload));
 };
 
-Logger.prototype.flushAsync = function(callback) {
-    callback = callback || (() => {});
+Logger.prototype.flushAsync = function flushAsync(callback) {
+    callback = callback || (() => {}); // eslint-disable-line no-param-reassign
 
     const parsed = url.parse(this.url);
     const options = {
@@ -57,20 +58,21 @@ Logger.prototype.flushAsync = function(callback) {
         port: parsed.port,
         method: 'POST',
         headers: {
-            'Authorization': `Splunk ${this.token}`
+            Authorization: `Splunk ${this.token}`,
         },
         rejectUnauthorized: false,
     };
+    // eslint-disable-next-line import/no-dynamic-require
     const requester = require(parsed.protocol.substring(0, parsed.protocol.length - 1));
 
     console.log('Sending event');
-    const req = requester.request(options, res => {
+    const req = requester.request(options, (res) => {
         res.setEncoding('utf8');
 
         console.log('Response received');
-        res.on('data', data => {
+        res.on('data', (data) => {
             let error = null;
-            if (res.statusCode != 200) {
+            if (res.statusCode !== 200) {
                 error = new Error(`error: statusCode=${res.statusCode}\n\n${data}`);
                 console.error(error);
             } else {
@@ -81,7 +83,7 @@ Logger.prototype.flushAsync = function(callback) {
         });
     });
 
-    req.on('error', error => {
+    req.on('error', (error) => {
         callback(error);
     });
 
