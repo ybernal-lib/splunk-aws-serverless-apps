@@ -1,0 +1,32 @@
+{
+  "name": "splunk-logging",
+  "version": "0.6.0",
+  "description": "AWS Lambda function blueprint to stream events from AWS DynamoDB stream to Splunk's HTTP event collector",
+  "main": "index.js",
+  "scripts": {
+    "test": "eslint -c ../.eslintrc --ignore-path ../.eslintignore .",
+    "postinstall": "node -e \"var s='../lib',d='lib',fs=require('fs');fs.exists(d,function(e){e||fs.symlinkSync(s,d,'dir')});\""
+  },
+  "keywords": [
+    "splunk",
+    "lambda",
+    "dynamodb",
+    "dynamodb-stream",
+    "hec"
+  ],
+  "authors":[  
+    "Roy Arsan <rarsan@splunk.com> (https://www.splunk.com)",
+    "Glenn Block <gblock@splunk.com> (https://www.splunk.com)"
+  ],
+  "license": "CC0-1.0",
+  "dependencies": {},
+  "devDependencies": {
+    "babel-eslint": "^7.1.0",
+    "eslint": "^3.10.2",
+    "eslint-config-airbnb": "^13.0.0",
+    "eslint-plugin-babel": "^3.3.0",
+    "eslint-plugin-import": "^2.2.0",
+    "eslint-plugin-jsx-a11y": "^2.2.3",
+    "eslint-plugin-react": "^6.7.1"
+  }
+}
