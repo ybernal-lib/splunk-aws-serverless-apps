@@ -3,5 +3,5 @@ node_modules
 
 # Artifacts from build & test
 *.zip
-wrapper.js
 lib
+setEnv.sh
