@@ -1,7 +1,7 @@
 {
   "name": "splunk-iot-processor",
-  "version": "0.1.0",
-  "description": "Stream events from AWS IoT to Splunk's HTTP event collector using AWS Lambda",
+  "version": "0.6.0",
+  "description": "AWS Lambda function blueprint to stream events from AWS IoT to Splunk's HTTP event collector",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -10,6 +10,7 @@
   "keywords": [
     "splunk",
     "lambda",
+    "iot",
     "hec"
   ],
   "authors":[  
