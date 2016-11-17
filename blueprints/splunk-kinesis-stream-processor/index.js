@@ -15,28 +15,32 @@
  * http://docs.splunk.com/Documentation/Splunk/latest/Data/UsetheHTTPEventCollector#Create_an_Event_Collector_token
  */
 
-var loggerConfig = {
-    url: process.env['SPLUNK_HEC_URL'] || 'https://<HOST>:<PORT>/services/collector',
-    token: process.env['SPLUNK_HEC_TOKEN'] || '<TOKEN>'
+'use strict';
+
+const loggerConfig = {
+    url: process.env.SPLUNK_HEC_URL || 'https://<HOST>:<PORT>/services/collector',
+    token: process.env.SPLUNK_HEC_TOKEN || '<TOKEN>',
 };
 
-var SplunkLogger = require("./lib/mysplunklogger");
-var logger = new SplunkLogger(loggerConfig);
+const SplunkLogger = require('./lib/mysplunklogger');
+
+const logger = new SplunkLogger(loggerConfig);
 
 exports.handler = (event, context, callback) => {
     console.log('Received event:', JSON.stringify(event, null, 2));
     event.Records.forEach((record) => {
         // Kinesis data is base64 encoded so decode here
-        var data = new Buffer(record.kinesis.data, 'base64').toString('ascii');
-        var splunkEvent = null;
-        
+        const data = new Buffer(record.kinesis.data, 'base64').toString('ascii');
+        let splunkEvent = null;
+
         try {
             splunkEvent = JSON.parse(data);
-            // change "time" below to be the timestamp from your event
+            //change "item.timestamp" below if time is represented in another field in the event.
+            //change to use logger.log() if no time field is present in event.
             logger.logWithTime(splunkEvent.time, splunkEvent, context);
-        } catch(exception) {
+        } catch (exception) {
             splunkEvent = data;
-            // change to use logWithTime() below if you want to pass in the timestamp from your event 
+            //change to use logWithTime() below if you want to pass in the timestamp from your event
             logger.log(splunkEvent, context);
         }
     });
@@ -46,6 +50,7 @@ exports.handler = (event, context, callback) => {
         if (error) {
             callback(error);
         } else {
+            console.log(`Response from Splunk:\n${response}`);
             console.log(`Successfully processed ${event.Records.length} record(s).`);
             callback(null, event.Records.length); // Return number of records
         }
