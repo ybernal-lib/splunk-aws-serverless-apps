@@ -15,28 +15,34 @@
  * http://docs.splunk.com/Documentation/Splunk/latest/Data/UsetheHTTPEventCollector#Create_an_Event_Collector_token
  */
 
-var loggerConfig = {
-    url: process.env['SPLUNK_HEC_URL'] || 'https://<HOST>:<PORT>/services/collector',
-    token: process.env['SPLUNK_HEC_TOKEN'] || '<TOKEN>'
+'use strict';
+
+const loggerConfig = {
+    url: process.env.SPLUNK_HEC_URL || 'https://<HOST>:<PORT>/services/collector',
+    token: process.env.SPLUNK_HEC_TOKEN || '<TOKEN>',
 };
 
-var zlib = require('zlib');
-var SplunkLogger = require("./lib/mysplunklogger");
-var logger = new SplunkLogger(loggerConfig);
+const SplunkLogger = require('./lib/mysplunklogger');
+const zlib = require('zlib');
+
+const logger = new SplunkLogger(loggerConfig);
 
 exports.handler = (event, context, callback) => {
     // CloudWatch Logs data is base64 encoded so decode here
-    var payload = new Buffer(event.awslogs.data, 'base64');
+    const payload = new Buffer(event.awslogs.data, 'base64');
     zlib.gunzip(payload, (err, result) => {
-        if (err) { 
+        if (err) {
             callback(err);
         } else {
-            result = JSON.parse(result.toString('ascii'));
-            console.log("Event Data:", JSON.stringify(result, null, 2));
-            var count = result && result.logEvents && result.logEvents.length || 0;
-            if (count > 0) {
-                result.logEvents.forEach((item, index) => {
+            const parsed = JSON.parse(result.toString('ascii'));
+            console.log('Event Data:', JSON.stringify(parsed, null, 2));
+            let count = 0;
+            if (parsed.logEvents) {
+                parsed.logEvents.forEach((item) => {
+                    // If applicable, change `item.timestamp` below to correct time field from your event
+                    // If no time field present in event, use "logger.log" instead
                     logger.logWithTime(item.timestamp, item.message, context);
+                    count += 1;
                 });
             }
             //send all the events in a single batch to Splunk
@@ -44,6 +50,7 @@ exports.handler = (event, context, callback) => {
                 if (error) {
                     callback(error);
                 } else {
+                    console.log(`Response from Splunk:\n${response}`);
                     console.log(`Successfully processed ${count} log event(s).`);
                     callback(null, count); // Return number of log events
                 }
