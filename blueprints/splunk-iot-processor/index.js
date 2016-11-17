@@ -15,13 +15,16 @@
  * http://docs.splunk.com/Documentation/Splunk/latest/Data/UsetheHTTPEventCollector#Create_an_Event_Collector_token
  */
 
-var loggerConfig = {
-    url: process.env['SPLUNK_HEC_URL'] || 'https://<HOST>:<PORT>/services/collector',
-    token: process.env['SPLUNK_HEC_TOKEN'] || '<TOKEN>'
+'use strict';
+
+const loggerConfig = {
+    url: process.env.SPLUNK_HEC_URL || 'https://<HOST>:<PORT>/services/collector',
+    token: process.env.SPLUNK_HEC_TOKEN || '<TOKEN>',
 };
 
-var SplunkLogger = require("./lib/mysplunklogger");
-var logger = new SplunkLogger(loggerConfig);
+const SplunkLogger = require('./lib/mysplunklogger');
+
+const logger = new SplunkLogger(loggerConfig);
 
 /**
  * The following JSON template shows what is sent as the payload:
@@ -40,18 +43,20 @@ var logger = new SplunkLogger(loggerConfig);
 exports.handler = (event, context, callback) => {
     console.log('Received event:', JSON.stringify(event, null, 2));
 
-    //log JSON objects
+    // Send entire JSON object
     logger.log(event, context);
 
-    //specify the timestamp explicitly, useful for forwarding events with embedded
-    //timestamps like from AWS IoT, AWS Kinesis, AWS CloudWatch Logs
+    // Specify the timestamp explicitly, useful for forwarding events with embedded
+    // timestamps like from AWS IoT, AWS Kinesis, AWS CloudWatch Logs
+    // Change to use logger.log() if no time field is present in event
     logger.logWithTime(Date.now(), event, context);
 
-     //send all the events in a single batch to Splunk
+    // Send all the events in a single batch to Splunk
     logger.flushAsync((error, response) => {
         if (error) {
             callback(error);
         } else {
+            console.log(`Response from Splunk:\n${response}`);
             console.log(`Hello from your IoT Button ${event.serialNumber}: ${event.clickType}`);
             callback(null, `${event.serialNumber}:${event.clickType}`); // Return button serial number & click type
         }
