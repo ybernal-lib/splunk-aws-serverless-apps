@@ -34,10 +34,10 @@ const logger = new SplunkLogger(loggerConfig);
 exports.handler = (event, context, callback) => {
     console.log('Received event:', JSON.stringify(event, null, 2));
 
-    // Send event JSON (with 'context' argument for additional Lambda metadata such as awsRequestId)
+    // Send event JSON (optional 'context' arg used to add Lambda metadata e.g. awsRequestId, functionName)
     logger.log(event, context);
 
-    // Send event JSON object with explicit timestamp
+    // Send event JSON with explicit timestamp
     // Change "Date.now()" below to event timestamp if specified in event payload
     logger.logWithTime(Date.now(), event, context);
 

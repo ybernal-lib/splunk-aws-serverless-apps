@@ -39,9 +39,9 @@ exports.handler = (event, context, callback) => {
             let count = 0;
             if (parsed.logEvents) {
                 parsed.logEvents.forEach((item) => {
-                    // Send item JSON object (with context object for additional metadata)
-                    // Change "item.timestamp" below if time is represented in another field in the event
-                    // Change to use logger.log() if no time field is present in event
+                    // Send item JSON object (optional 'context' arg used to add Lambda metadata e.g. awsRequestId, functionName)
+                    // Change "item.timestamp" below if time is specified in another field in the event
+                    // Change to "logger.log(item.message, context)" if no time field is present in event
                     logger.logWithTime(item.timestamp, item.message, context);
                     count += 1;
                 });

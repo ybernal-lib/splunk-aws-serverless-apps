@@ -36,11 +36,12 @@ exports.handler = (event, context, callback) => {
     // Log JSON objects
     logger.log(event);
 
-    // Log JSON objects with context object for additional Lambda metadata such as awsRequestId
+    // Log JSON objects with optional 'context' argument to add Lambda metadata e.g. awsRequestId, functionName
     logger.log(event, context);
 
     // Specify the timestamp explicitly, useful for forwarding events with embedded
     // timestamps like from AWS IoT, AWS Kinesis, AWS CloudWatch Logs
+    // Change "Date.now()" below to event timestamp if specified in event payload
     logger.logWithTime(Date.now(), event, context);
 
     // Send all the events in a single batch to Splunk

@@ -31,7 +31,9 @@ exports.handler = (event, context, callback) => {
     console.log('Received event:', JSON.stringify(event, null, 2));
     event.Records.forEach((record) => {
         console.log('DynamoDB Record: %j', record.dynamodb);
-        // Send record JSON object (with context object for additional metadata)
+        // Send record JSON object (optional 'context' arg used to add Lambda metadata e.g. awsRequestId, functionName)
+        // Change to use "logger.logWithTime(<EVENT_TIMESTAMP>, record, context)" below if you want to
+        // to pass in the timestamp from your event
         logger.log(record, context);
     });
 

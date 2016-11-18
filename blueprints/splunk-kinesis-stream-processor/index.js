@@ -35,13 +35,14 @@ exports.handler = (event, context, callback) => {
 
         try {
             item = JSON.parse(data);
-            // Send item JSON object (with context object for additional metadata)
-            // Change "item.time" below if time is represented in another field in the event
-            // Change to use logger.log() if no time field is present in event
+            // Send item JSON object (optional 'context' used to add Lambda metadata e.g. awsRequestId, functionName)
+            // Change "item.time" below if time is specified in another field in the event
+            // Change to use "logger.log(item, context)" if no time field is present in event
             logger.logWithTime(item.time, item, context);
         } catch (exception) {
             item = data;
-            // Change to use logWithTime() below if you want to pass in the timestamp from your event
+            // Change to use "logger.logWithTime(<EVENT_TIMESTAMP>, item, context)" below if you want to
+            // to pass in the timestamp from your event
             logger.log(item, context);
         }
     });
