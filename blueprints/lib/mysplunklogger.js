@@ -9,6 +9,21 @@ const Logger = function Logger(config) {
     this.addMetadata = true;
     this.setSource = true;
 
+    this.parsedUrl = url.parse(this.url);
+    // eslint-disable-next-line import/no-dynamic-require
+    this.requester = require(this.parsedUrl.protocol.substring(0, this.parsedUrl.protocol.length - 1));
+    // Initialize request options which can be overridden & extended by consumer as needed
+    this.requestOptions = {
+        hostname: this.parsedUrl.hostname,
+        path: this.parsedUrl.path,
+        port: this.parsedUrl.port,
+        method: 'POST',
+        headers: {
+            Authorization: `Splunk ${this.token}`,
+        },
+        rejectUnauthorized: false,
+    };
+
     this.payloads = [];
 };
 
@@ -51,22 +66,8 @@ Logger.prototype.logEvent = function logEvent(payload) {
 Logger.prototype.flushAsync = function flushAsync(callback) {
     callback = callback || (() => {}); // eslint-disable-line no-param-reassign
 
-    const parsed = url.parse(this.url);
-    const options = {
-        hostname: parsed.hostname,
-        path: parsed.path,
-        port: parsed.port,
-        method: 'POST',
-        headers: {
-            Authorization: `Splunk ${this.token}`,
-        },
-        rejectUnauthorized: false,
-    };
-    // eslint-disable-next-line import/no-dynamic-require
-    const requester = require(parsed.protocol.substring(0, parsed.protocol.length - 1));
-
     console.log('Sending event');
-    const req = requester.request(options, (res) => {
+    const req = this.requester.request(this.requestOptions, (res) => {
         res.setEncoding('utf8');
 
         console.log('Response received');
