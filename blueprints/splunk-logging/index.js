@@ -28,21 +28,32 @@ const SplunkLogger = require('./lib/mysplunklogger');
 const logger = new SplunkLogger(loggerConfig);
 
 exports.handler = (event, context, callback) => {
-    // Log strings
-    logger.log(`value1 = ${event.key1}`, context);
-    logger.log(`value2 = ${event.key2}`, context);
-    logger.log(`value3 = ${event.key3}`, context);
-
     // Log JSON objects
     logger.log(event);
 
-    // Log JSON objects with optional 'context' argument to add Lambda metadata e.g. awsRequestId, functionName
+    // Log JSON objects with optional 'context' argument (recommended)
+    // This adds valuable Lambda metadata including functionName as source, awsRequestId as field
     logger.log(event, context);
 
-    // Specify the timestamp explicitly, useful for forwarding events with embedded
-    // timestamps like from AWS IoT, AWS Kinesis, AWS CloudWatch Logs
+    // Log strings
+    logger.log(`value1 = ${event.key1}`, context);
+
+    // Log with user-specified timestamp - useful for forwarding events with embedded
+    // timestamps, such as from AWS IoT, AWS Kinesis, AWS CloudWatch Logs
     // Change "Date.now()" below to event timestamp if specified in event payload
     logger.logWithTime(Date.now(), event, context);
+
+    // Advanced:
+    // Log event with user-specified request parameters - useful to set input settings per event vs token-level
+    // Full list of request parameters available here:
+    // http://docs.splunk.com/Documentation/Splunk/latest/RESTREF/RESTinput#services.2Fcollector
+    logger.logEvent({
+        time: Date.now(),
+        host: 'serverless',
+        source: `lambda:${context.functionName}`,
+        sourcetype: 'httpevent',
+        event: event,
+    });
 
     // Send all the events in a single batch to Splunk
     logger.flushAsync((error, response) => {
