@@ -4,15 +4,14 @@
  * This function streams AWS DynamoDB Stream events to Splunk using
  * Splunk's HTTP event collector API.
  *
- * Follow these steps to configure the function to log to your Splunk
- * host:
+ * Define the following Environment Variables in the console below to configure
+ * this function to stream events to your Splunk host:
  *
- * 1. Enter url address for your Splunk HTTP event collector endpoint.
- * Default port for event collector is 8088. Make sure no firewalls would prevent
- * your Lambda function from connecting to this port on your Splunk host(s).
+ * 1. SPLUNK_HEC_URL: URL address for your Splunk HTTP event collector endpoint.
+ * Default port for event collector is 8088. Example: https://host.com:8088/services/collector
  *
- * 2. Enter token for your Splunk HTTP event collector. To create a new token
- * for this Lambda function, refer to Splunk Docs:
+ * 2. SPLUNK_HEC_TOKEN: Token for your Splunk HTTP event collector.
+ * To create a new token for this Lambda function, refer to Splunk Docs:
  * http://docs.splunk.com/Documentation/Splunk/latest/Data/UsetheHTTPEventCollector#Create_an_Event_Collector_token
  */
 

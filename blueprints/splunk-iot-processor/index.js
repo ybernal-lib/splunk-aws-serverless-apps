@@ -4,17 +4,17 @@
  * This function streams AWS IoT events to Splunk using
  * Splunk's HTTP event collector API.
  *
- * Follow these steps to configure this function:
+ * Define the following Environment Variables in the console below to configure
+ * this function to stream events to your Splunk host:
  *
- * 1. Enter url address for your Splunk HTTP event collector endpoint.
- * Default port for event collector is 8088. Make sure no firewalls would prevent
- * your Lambda function from connecting to this port on your Splunk host(s).
+ * 1. SPLUNK_HEC_URL: URL address for your Splunk HTTP event collector endpoint.
+ * Default port for event collector is 8088. Example: https://host.com:8088/services/collector
  *
- * 2. Enter token for your Splunk HTTP event collector. To create a new token
- * for this Lambda function, refer to Splunk Docs:
+ * 2. SPLUNK_HEC_TOKEN: Token for your Splunk HTTP event collector.
+ * To create a new token for this Lambda function, refer to Splunk Docs:
  * http://docs.splunk.com/Documentation/Splunk/latest/Data/UsetheHTTPEventCollector#Create_an_Event_Collector_token
  *
- * 3. Create AWS IoT Rule with Lambda action set to this function name.
+ * Once Lambda function created, add an AWS IoT Rule with Lambda action set to this function name.
  * For more details, including adding permissions to AWS IoT to invoke Lambda, refer to AWS Docs:
  * http://docs.aws.amazon.com/iot/latest/developerguide/iot-lambda-rule.html#iot-create-lambda-rule
  * http://docs.aws.amazon.com/iot/latest/developerguide/lambda-rule.html

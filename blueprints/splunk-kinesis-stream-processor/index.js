@@ -4,14 +4,14 @@
  * This function streams AWS Kinesis events to Splunk using
  * Splunk's HTTP event collector API.
  *
- * Follow these steps to configure this function:
+ * Define the following Environment Variables in the console below to configure
+ * this function to stream events to your Splunk host:
  *
- * 1. Enter url address for your Splunk HTTP event collector endpoint.
- * Default port for event collector is 8088. Make sure no firewalls would prevent
- * your Lambda function from connecting to this port on your Splunk host(s).
+ * 1. SPLUNK_HEC_URL: URL address for your Splunk HTTP event collector endpoint.
+ * Default port for event collector is 8088. Example: https://host.com:8088/services/collector
  *
- * 2. Enter token for your Splunk HTTP event collector. To create a new token
- * for this Lambda function, refer to Splunk Docs:
+ * 2. SPLUNK_HEC_TOKEN: Token for your Splunk HTTP event collector.
+ * To create a new token for this Lambda function, refer to Splunk Docs:
  * http://docs.splunk.com/Documentation/Splunk/latest/Data/UsetheHTTPEventCollector#Create_an_Event_Collector_token
  */
 
@@ -35,7 +35,7 @@ exports.handler = (event, context, callback) => {
 
         try {
             item = JSON.parse(data);
-            // Send item JSON object (optional 'context' used to add Lambda metadata e.g. awsRequestId, functionName)
+            // Send item JSON object (optional 'context' arg used to add Lambda metadata e.g. awsRequestId, functionName)
             // Change "item.time" below if time is specified in another field in the event
             // Change to use "logger.log(item, context)" if no time field is present in event
             logger.logWithTime(item.time, item, context);
