@@ -1,6 +1,8 @@
 node_modules
 .DS_Store
 
+src/*
+
 # Artifacts from build & test
 *.zip
 lib
