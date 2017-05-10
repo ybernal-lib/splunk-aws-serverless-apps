@@ -22,7 +22,7 @@ function usage(){
 function build() {
     name=$1
     version=$2
-    package="${name}.v${version}.zip"
+    package="${name}.zip"
 
     echo "Building package for blueprint ${name}"
     echo ""
@@ -30,12 +30,17 @@ function build() {
     pushd ${name}
     
     #npm install
-    zip -r ${package} index.js lambda.json lib/;
+    npm test
+    rm -f ${package}
+    zip -r ${package} index.js lambda.json lib/
+    aws s3 cp ${package} s3://splk-blueprints/${version}/ --acl public-read --profile gsa
+    aws s3 cp ${package} s3://splk-blueprints/latest/ --acl public-read --profile gsa
 
     popd
     
     echo ""
     echo "Package ${package} build complete"
+    sleep 2
 }
 
 if [[ "$#" -gt 2 || "$#" -lt 1 ]]; then

@@ -28,6 +28,7 @@ function test() {
     pushd ${name}
     
     npm install
+    npm test
     node wrapper.js
     
     popd
@@ -42,7 +43,7 @@ fi
 
 pushd blueprints
 
-if [ -z "$1"]; then
+if [ -z "$1" ]; then
     for blueprint in *; do
         if [[ -d $blueprint && $blueprint != "lib" ]]; then
            test $blueprint
