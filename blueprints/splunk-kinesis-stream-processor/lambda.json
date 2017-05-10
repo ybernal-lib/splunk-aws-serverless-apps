@@ -2,7 +2,7 @@
   "lambda": {
     "FunctionName": "splunk-kinesis-stream-processor",
     "Handler": "index.handler",
-    "Runtime": "nodejs4.3",
+    "Runtime": "nodejs6.10",
     "Description": "Stream events from AWS Kinesis to Splunk's HTTP event collector",
     "MemorySize": 512,
     "Timeout": 10
