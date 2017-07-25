@@ -29,12 +29,12 @@ function build() {
     
     pushd ${name}
     
-    #npm install
+    npm install
     npm test
     rm -f ${package}
     zip -r ${package} index.js lambda.json lib/
-    aws s3 cp ${package} s3://splk-blueprints/${version}/ --acl public-read --profile gsa
-    aws s3 cp ${package} s3://splk-blueprints/latest/ --acl public-read --profile gsa
+    aws s3 cp ${package} s3://splk-blueprints/${version}/ --acl public-read
+    aws s3 cp ${package} s3://splk-blueprints/latest/ --acl public-read
 
     popd
     
