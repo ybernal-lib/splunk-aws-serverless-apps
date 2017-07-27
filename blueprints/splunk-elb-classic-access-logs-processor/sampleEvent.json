@@ -11,12 +11,12 @@
         "object": {
           "eTag": "0123456789abcdef0123456789abcdef",
           "sequencer": "0A1B2C3D4E5F678901",
-          "key": "AWSLogs/112543817624/elasticloadbalancing/us-west-2/2017/05/25/112543817624_elasticloadbalancing_us-west-2_Splunk-En-SplunkSH-CBJD72EA9E5K_20170525T2020Z_52.37.228.203_3n9nuwes.log",
+          "key": "elb-classic/1234567890_elasticloadbalancing_us-west-2_Splunk-En-SplunkSH-CBJD72EA9E5K_20170525T2025Z_52.43.6.3_4rw05n16.log",
           "size": 1024
         },
         "bucket": {
-          "arn": "arn:aws:s3:::splunk-enterprise-splunkstack-test1",
-          "name": "splunk-enterprise-splunkstack-test1",
+          "arn": "arn:aws:s3:::lambda-sample-events",
+          "name": "lambda-sample-events",
           "ownerIdentity": {
             "principalId": "EXAMPLE"
           }

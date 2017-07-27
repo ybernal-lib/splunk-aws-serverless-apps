@@ -11,12 +11,12 @@
         "object": {
           "eTag": "0123456789abcdef0123456789abcdef",
           "sequencer": "0A1B2C3D4E5F678901",
-          "key": "Logs/AWSLogs/112543817624/elasticloadbalancing/us-east-1/2017/05/10/112543817624_elasticloadbalancing_us-east-1_app.clust-Splun-17UR9GV42PJ29.6d4bac7deed18b9a_20170510T0650Z_52.5.186.38_11phvfc6.log.gz",
+          "key": "elb-application/1234567890_elasticloadbalancing_us-west-2_app.clust-Splun-17UR9GV42PJ29.6d4bac7deed18b9a_20170510T0650Z_52.5.186.38_11phvfc6.log.gz",
           "size": 1024
         },
         "bucket": {
-          "arn": "arn:aws:s3:::cluster-test-2-splunkstack-1e4lmb4cx6v-logsbucket-1dyn0z1pedofp",
-          "name": "cluster-test-2-splunkstack-1e4lmb4cx6v-logsbucket-1dyn0z1pedofp",
+          "arn": "arn:aws:s3:::lambda-sample-events",
+          "name": "lambda-sample-events",
           "ownerIdentity": {
             "principalId": "EXAMPLE"
           }
