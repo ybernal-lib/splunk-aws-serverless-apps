@@ -23,8 +23,8 @@
 'use strict';
 
 const loggerConfig = {
-    url: process.env.SPLUNK_HEC_URL || 'https://<HOST>:<PORT>/services/collector',
-    token: process.env.SPLUNK_HEC_TOKEN || '<TOKEN>',
+    url: process.env.SPLUNK_HEC_URL,
+    token: process.env.SPLUNK_HEC_TOKEN,
 };
 
 const SplunkLogger = require('./lib/mysplunklogger');
