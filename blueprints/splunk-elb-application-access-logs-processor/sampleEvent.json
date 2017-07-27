@@ -1,0 +1,38 @@
+{
+  "Records": [
+    {
+      "eventVersion": "2.0",
+      "eventTime": "1970-01-01T00:00:00.000Z",
+      "requestParameters": {
+        "sourceIPAddress": "127.0.0.1"
+      },
+      "s3": {
+        "configurationId": "testConfigRule",
+        "object": {
+          "eTag": "0123456789abcdef0123456789abcdef",
+          "sequencer": "0A1B2C3D4E5F678901",
+          "key": "Logs/AWSLogs/112543817624/elasticloadbalancing/us-east-1/2017/05/10/112543817624_elasticloadbalancing_us-east-1_app.clust-Splun-17UR9GV42PJ29.6d4bac7deed18b9a_20170510T0650Z_52.5.186.38_11phvfc6.log.gz",
+          "size": 1024
+        },
+        "bucket": {
+          "arn": "arn:aws:s3:::cluster-test-2-splunkstack-1e4lmb4cx6v-logsbucket-1dyn0z1pedofp",
+          "name": "cluster-test-2-splunkstack-1e4lmb4cx6v-logsbucket-1dyn0z1pedofp",
+          "ownerIdentity": {
+            "principalId": "EXAMPLE"
+          }
+        },
+        "s3SchemaVersion": "1.0"
+      },
+      "responseElements": {
+        "x-amz-id-2": "EXAMPLE123/5678abcdefghijklambdaisawesome/mnopqrstuvwxyzABCDEFGH",
+        "x-amz-request-id": "EXAMPLE123456789"
+      },
+      "awsRegion": "us-east-1",
+      "eventName": "ObjectCreated:Put",
+      "userIdentity": {
+        "principalId": "EXAMPLE"
+      },
+      "eventSource": "aws:s3"
+    }
+  ]
+}

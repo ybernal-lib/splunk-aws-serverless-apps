@@ -1,0 +1,30 @@
+{
+  "lambda": {
+    "FunctionName": "splunk-elb-application-access-logs-processor",
+    "Handler": "index.handler",
+    "Runtime": "nodejs6.10",
+    "Description": "Stream Application ELB access logs from S3 to Splunk's HTTP event collector",
+    "MemorySize": 512,
+    "Timeout": 10
+  },
+  "triggers": {
+    "s3": [
+      {}
+    ]
+  },
+  "version": "0.8.0",
+  "license": "CC0-1.0",
+  "tags": [
+    "nodejs",
+    "splunk",
+    "elb",
+    "application-elb"
+  ],
+  "authors": [
+    "Roy Arsan <roy@splunk.com> (https://www.splunk.com)"
+  ],
+  "roleTemplates": [
+    "S3"
+  ]
+}
+
