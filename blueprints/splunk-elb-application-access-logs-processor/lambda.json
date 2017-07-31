@@ -18,6 +18,7 @@
     "nodejs",
     "splunk",
     "elb",
+    "s3",
     "application-elb"
   ],
   "authors": [
