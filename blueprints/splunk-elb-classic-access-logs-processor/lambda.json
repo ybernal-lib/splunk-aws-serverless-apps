@@ -4,6 +4,12 @@
     "Handler": "index.handler",
     "Runtime": "nodejs6.10",
     "Description": "Stream Classic ELB access logs from S3 to Splunk's HTTP event collector",
+    "Environment": {
+      "Variables": {
+        "SPLUNK_HEC_URL": "<enter value here>",
+        "SPLUNK_HEC_TOKEN": "<enter value here>"
+      }
+    },
     "MemorySize": 512,
     "Timeout": 10
   },
