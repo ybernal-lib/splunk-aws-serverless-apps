@@ -1,6 +1,6 @@
 {
   "name": "splunk-elb-classic-access-logs-processor",
-  "version": "0.8.0",
+  "version": "0.8.1",
   "description": "AWS Lambda function blueprint to stream Classic ELB access logs from S3 to Splunk's HTTP event collector",
   "main": "index.js",
   "scripts": {
