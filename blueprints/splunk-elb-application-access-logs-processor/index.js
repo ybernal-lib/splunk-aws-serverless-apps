@@ -65,7 +65,7 @@ exports.handler = (event, context, callback) => {
                                 // For more details: http://docs.aws.amazon.com/elasticloadbalancing/latest/application/load-balancer-access-logs.html#access-log-entry-format
                                 time = logEntry.split(' ')[1];
                                 // Log event with specific host, source & sourcetype
-                                // Full list of request parameters available on his page - click on [Expand]:
+                                // Full list of request parameters available on this page - click on [Expand]:
                                 // http://docs.splunk.com/Documentation/Splunk/latest/RESTREF/RESTinput#services.2Fcollector
                                 logger.logEvent({
                                     time: new Date(time).getTime() / 1000,

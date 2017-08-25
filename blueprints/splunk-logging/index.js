@@ -26,7 +26,9 @@ const SplunkLogger = require('./lib/mysplunklogger');
 const logger = new SplunkLogger(loggerConfig);
 
 exports.handler = (event, context, callback) => {
-    // Log JSON objects
+    console.log('Received event:', JSON.stringify(event, null, 2));
+
+    // Log JSON objects to Splunk
     logger.log(event);
 
     // Log JSON objects with optional 'context' argument (recommended)

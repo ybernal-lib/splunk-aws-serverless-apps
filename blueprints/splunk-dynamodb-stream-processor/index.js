@@ -28,12 +28,28 @@ const logger = new SplunkLogger(loggerConfig);
 
 exports.handler = (event, context, callback) => {
     console.log('Received event:', JSON.stringify(event, null, 2));
+    let count = 0;
+
     event.Records.forEach((record) => {
         console.log('DynamoDB Record: %j', record.dynamodb);
-        // Send record JSON object (optional 'context' arg used to add Lambda metadata e.g. awsRequestId, functionName)
-        // Change to use "logger.logWithTime(<EVENT_TIMESTAMP>, record, context)" below if you want to
-        // to pass in the timestamp from your event
+
+        /* Log event to Splunk
+        - Use optional 'context' argument to send Lambda metadata e.g. awsRequestId, functionName.
+        - Change to "logger.logWithTime(<EVENT_TIMESTAMP>, item, context)" to explicitly set event timestamp */
         logger.log(record, context);
+
+        /* Alternatively, UNCOMMENT logger call below if you want to override Splunk input settings */
+        /* Log event to Splunk with any combination of explicit timestamp, index, source, sourcetype, and host.
+        - Complete list of input settings available at http://docs.splunk.com/Documentation/Splunk/latest/RESTREF/RESTinput#services.2Fcollector */
+        // logger.logEvent({
+        //     host: 'serverless',
+        //     source: `lambda:${context.functionName}`,
+        //     sourcetype: 'httpevent',
+        //     index: 'main',
+        //     event: record,
+        // });
+
+        count += 1;
     });
 
     // Send all the events in a single batch to Splunk
@@ -42,8 +58,8 @@ exports.handler = (event, context, callback) => {
             callback(error);
         } else {
             console.log(`Response from Splunk:\n${response}`);
-            console.log(`Successfully processed ${event.Records.length} record(s).`);
-            callback(null, event.Records.length); // Return number of records
+            console.log(`Successfully processed ${count} record(s).`);
+            callback(null, count); // Return number of records processed
         }
     });
 };

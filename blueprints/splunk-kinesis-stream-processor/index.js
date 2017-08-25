@@ -28,23 +28,43 @@ const logger = new SplunkLogger(loggerConfig);
 
 exports.handler = (event, context, callback) => {
     console.log('Received event:', JSON.stringify(event, null, 2));
+    let count = 0;
+
     event.Records.forEach((record) => {
         // Kinesis data is base64 encoded so decode here
         const data = new Buffer(record.kinesis.data, 'base64').toString('ascii');
         let item = null;
 
+        /* NOTE: if Kinesis stream records originates from CloudWatch Logs, data is
+        compressed and needs to be expanded here. Refer to 'splunk-cloudwatch-log-processor'
+        blueprint in AWS Lambda console for sample code using zlib */
+
+        console.log('Decoded payload:', JSON.stringify(data, null, 2));
+
         try {
             item = JSON.parse(data);
-            // Send item JSON object (optional 'context' arg used to add Lambda metadata e.g. awsRequestId, functionName)
-            // Change "item.time" below if time is specified in another field in the event
-            // Change to use "logger.log(item, context)" if no time field is present in event
-            logger.logWithTime(item.time, item, context);
         } catch (exception) {
             item = data;
-            // Change to use "logger.logWithTime(<EVENT_TIMESTAMP>, item, context)" below if you want to
-            // to pass in the timestamp from your event
-            logger.log(item, context);
         }
+
+        /* Log event to Splunk
+        - Use optional 'context' argument to send Lambda metadata e.g. awsRequestId, functionName.
+        - Change to "logger.logWithTime(<EVENT_TIMESTAMP>, item, context)" to explicitly set event timestamp */
+        logger.log(item, context);
+
+        /* Alternatively, UNCOMMENT logger call below if you want to override Splunk input settings */
+        /* Log event to Splunk with any combination of explicit timestamp, index, source, sourcetype, and host.
+        - Complete list of input settings available at http://docs.splunk.com/Documentation/Splunk/latest/RESTREF/RESTinput#services.2Fcollector */
+        // logger.logEvent({
+        //     time: record.kinesis.approximateArrivalTimestamp,
+        //     host: 'serverless',
+        //     source: `lambda:${context.functionName}`,
+        //     sourcetype: 'httpevent',
+        //     index: 'main',
+        //     event: item,
+        // });
+
+        count += 1;
     });
 
     // Send all the events in a single batch to Splunk
@@ -53,8 +73,8 @@ exports.handler = (event, context, callback) => {
             callback(error);
         } else {
             console.log(`Response from Splunk:\n${response}`);
-            console.log(`Successfully processed ${event.Records.length} record(s).`);
-            callback(null, event.Records.length); // Return number of records
+            console.log(`Successfully processed ${count} record(s).`);
+            callback(null, count); // Return number of records processed
         }
     });
 };

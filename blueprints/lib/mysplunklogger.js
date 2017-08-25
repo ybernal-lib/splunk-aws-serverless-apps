@@ -66,7 +66,7 @@ Logger.prototype.logEvent = function logEvent(payload) {
 Logger.prototype.flushAsync = function flushAsync(callback) {
     callback = callback || (() => {}); // eslint-disable-line no-param-reassign
 
-    console.log('Sending event');
+    console.log('Sending event(s)');
     const req = this.requester.request(this.requestOptions, (res) => {
         res.setEncoding('utf8');
 
@@ -76,8 +76,6 @@ Logger.prototype.flushAsync = function flushAsync(callback) {
             if (res.statusCode !== 200) {
                 error = new Error(`error: statusCode=${res.statusCode}\n\n${data}`);
                 console.error(error);
-            } else {
-                console.log('Sent');
             }
             this.payloads.length = 0;
             callback(error, data);
