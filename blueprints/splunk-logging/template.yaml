@@ -1,0 +1,57 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: 'AWS::Serverless-2016-10-31'
+Description: >
+    This SAM template creates a Lambda function for logging to Splunk + IAM Roles
+
+    Last Modified: 06 Oct, 2017
+    Author: Roy Arsan <roy@splunk.com>
+
+Parameters:
+    SplunkHttpEventCollectorURL:
+      Type: "String"
+      Description: "URL address of your Splunk HTTP event collector endpoint"
+
+    SplunkHttpEventCollectorToken:
+      Type: "String"
+      Description: "Token of your Splunk HTTP event collector endpoint"
+
+Outputs:
+    SplunkLoggingFunction:
+      Description: "Splunk Logging Lambda Function ARN"
+      Value: !GetAtt SplunkLoggingFunction.Arn
+
+Resources:
+    SplunkLoggingFunctionIAMRole:
+        Type: "AWS::IAM::Role"
+        Properties:
+            Path: "/"
+            ManagedPolicyArns:
+                - "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+            AssumeRolePolicyDocument:
+              Version: "2012-10-17"
+              Statement:
+                -
+                  Sid: "AllowLambdaServiceToAssumeRole"
+                  Effect: "Allow"
+                  Action: 
+                    - "sts:AssumeRole"
+                  Principal:
+                    Service: 
+                      - "lambda.amazonaws.com"
+
+    SplunkLoggingFunction:
+      Type: 'AWS::Serverless::Function'
+      Properties:
+        Handler: index.handler
+        Runtime: nodejs6.10
+        CodeUri: ./splunk-logging.zip
+        Role: !GetAtt SplunkLoggingFunctionIAMRole.Arn
+        Description: Demonstrates logging from AWS Lambda code to Splunk's HTTP event collector
+        MemorySize: 512
+        Timeout: 30
+        Environment:
+          Variables:
+            SPLUNK_HEC_URL: !Ref SplunkHttpEventCollectorURL
+            SPLUNK_HEC_TOKEN: !Ref SplunkHttpEventCollectorToken
+
+  
