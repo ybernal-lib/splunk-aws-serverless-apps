@@ -3,5 +3,6 @@ node_modules
 
 # Artifacts from build & test
 *.zip
+packaged-template.yaml
 lib
 setEnv.sh
