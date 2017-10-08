@@ -19,7 +19,7 @@
     "cloudwatch-logs",
     "hec"
   ],
-  "authors": [  
+  "authors": [
     "Roy Arsan <rarsan@splunk.com> (https://www.splunk.com)",
     "Glenn Block <gblock@splunk.com> (https://www.splunk.com)"
   ],

@@ -2,7 +2,9 @@ AWSTemplateFormatVersion: '2010-09-09'
 Transform: 'AWS::Serverless-2016-10-31'
 Description: >
     Serverless application to stream events from AWS CloudWatch Logs to Splunk HTTP event collector.
-    This SAM template creates the Lambda function with necessary permissions and event trigger.
+    This SAM template creates the Lambda function with its IAM role, a CloudWatch Logs subscription
+    filter for user-provided log group, along with a Lambda permission to grant CloudWatch Logs
+    permission to invoke this function. Log group must be in same region as 
 
     Last Modified: 06 Oct, 2017
     Authors: Roy Arsan <roy@splunk.com>, Bill Bartlett <bbartlett@splunk.com>, Tarik Makota <tmak@amazon.com>
@@ -39,11 +41,13 @@ Resources:
       Properties: 
         Action: "lambda:InvokeFunction"
         FunctionName: !GetAtt SplunkCloudWatchLogsProcessorFunction.Arn
-        Principal: !Join [ ".", [ "logs", !Ref "AWS::Region", "amazonaws", "com" ] ]
+        Principal: !Join
+          - "."
+          - [ "logs", !Ref "AWS::Region", !Ref "AWS::URLSuffix" ]
         SourceAccount: !Ref "AWS::AccountId"
         SourceArn: !Join
           - ":"
-          - [ "arn", "aws", "logs", !Ref "AWS::Region", !Ref "AWS::AccountId", "log-group", !Ref CloudWatchLogsGroupName, "*" ]
+          - [ "arn", !Ref "AWS::Partition", "logs", !Ref "AWS::Region", !Ref "AWS::AccountId", "log-group", !Ref CloudWatchLogsGroupName, "*" ]
 
     SplunkCloudWatchLogsProcessorFunctionIAMRole:
       Type: "AWS::IAM::Role"
