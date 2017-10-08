@@ -4,8 +4,13 @@
   "description": "AWS Lambda function blueprint to stream events from AWS DynamoDB stream to Splunk's HTTP event collector",
   "main": "index.js",
   "scripts": {
-    "test": "eslint -c ../.eslintrc --ignore-path ../.eslintignore .",
-    "postinstall": "node -e \"var s='../lib',d='lib',fs=require('fs');fs.exists(d,function(e){e||fs.symlinkSync(s,d,'dir')});\""
+    "lint": "eslint -c ../.eslintrc --ignore-path ../.eslintignore .",
+    "test": "node wrapper.js",
+    "build": "zip -r splunk-dynamodb-stream-processor.zip index.js lambda.json lib/",
+    "clean": "rm -f splunk-dynamodb-stream-processor.zip",
+
+    "postinstall": "node -e \"var s='../lib',d='lib',fs=require('fs');fs.exists(d,function(e){e||fs.symlinkSync(s,d,'dir')});\"",
+    "pretest": "npm run lint"
   },
   "keywords": [
     "splunk",
@@ -14,7 +19,7 @@
     "dynamodb-stream",
     "hec"
   ],
-  "authors":[  
+  "authors": [
     "Roy Arsan <rarsan@splunk.com> (https://www.splunk.com)",
     "Glenn Block <gblock@splunk.com> (https://www.splunk.com)"
   ],
