@@ -1,10 +1,11 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: 'AWS::Serverless-2016-10-31'
 Description: >
-    Serverless application to stream events from AWS CloudWatch Logs to Splunk HTTP event collector.
-    This SAM template creates the Lambda function with its IAM role, a CloudWatch Logs subscription
-    filter for user-provided log group, along with a Lambda permission to grant CloudWatch Logs
-    permission to invoke this function. Log group must be in same region as 
+    Serverless application to stream events from AWS CloudWatch Logs to Splunk HTTP Event Collector (HEC).
+
+    This SAM template creates the Lambda function with its IAM execution role, a CloudWatch Logs subscription
+    filter for user-provided log group, along with a Lambda permission to grant CloudWatch Logs permission
+    to invoke this function. Log group must be in same region as the region where this stack is created.
 
     Last Modified: 06 Oct, 2017
     Authors: Roy Arsan <roy@splunk.com>, Bill Bartlett <bbartlett@splunk.com>, Tarik Makota <tmak@amazon.com>
@@ -12,7 +13,7 @@ Description: >
 Parameters:
     CloudWatchLogsGroupName: 
       Type: "String"
-      Description: "CloudWatch log group name"
+      Description: "Name of a CloudWatch log group (must be in the same region)"
 
     SplunkHttpEventCollectorURL:
       Type: "String"
