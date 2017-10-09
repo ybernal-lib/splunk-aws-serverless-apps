@@ -47,15 +47,15 @@ aws cloudformation deploy --template $(pwd)/template.output.yaml --parameter-ove
 
 ## Dev & Test
 
-### NPM tasks
+### Use npm tasks
 For each serverless application, you can use the following npm tasks:
 
 | command | description |
 | --- | --- |
 | `npm run lint` | run eslint rules against .js files |
-| `npm run build` | create zip deployment package out of required .js files |
+| `npm run build` | create zip deployment package with required .js files |
 | `npm run clean` | remove zip deployment package |
-| `npm run test` (or `npm test`) | run simple integration test with live Splunk instance. More details in section below. |
+| `npm run test` (or `npm test`) | run simple integration test with live Splunk Enterprise instance. More details in section below. |
 
 ### Setup test environment
 
@@ -79,30 +79,13 @@ This command first runs lint checks against Lambda function code. Only after suc
 
 Received event: {
   "awslogs": {
-    "data": "H4sIAAAAAAAAAHWPwQqCQBCGX0Xm7EFtK+smZBEUgXoLCdMhFtKV3akI8d0bLYmibvPPN3wz00CJxmQnTO41whwWQRIctmEcB6sQbFC3CjW3XW8kxpOpP+OC22d1Wml1qZkQGtoMsScxaczKN3plG8zlaHIta5KqWsozoTYw3/djzwhpLwivWFGHGpAFe7DL68JlBUk+l7KSN7tCOEJ4M3/qOI49vMHj+zCKdlFqLaU2ZHV2a4Ct/an0/ivdX8oYc1UVX860fQDQiMdxRQEAAA=="
-  }
+...
+...
 }
 Done
 Decoded payload: {
-  "messageType": "DATA_MESSAGE",
-  "owner": "123456789123",
-  "logGroup": "testLogGroup",
-  "logStream": "testLogStream",
-  "subscriptionFilters": [
-    "testFilter"
-  ],
-  "logEvents": [
-    {
-      "id": "eventId1",
-      "timestamp": 1440442987000,
-      "message": "[ERROR] First test message"
-    },
-    {
-      "id": "eventId2",
-      "timestamp": 1440442987001,
-      "message": "[ERROR] Second test message"
-    }
-  ]
+...
+...
 }
 Sending event(s)
 Response received
