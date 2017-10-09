@@ -75,6 +75,11 @@ npm test
 ```
 This command first runs lint checks against Lambda function code. Only after successfully lint checks, this command will run the Lambda function passing it the event in `sampleEvent.json` along with `SPLUNK_HEC_URL` and `SPLUNK_HEC_TOKEN` environment variables. The function output and final status is directed to standard out. Here's an example of a successful execution:
 ```
+$ npm test
+> splunk-cloudwatch-logs-processor@0.8.1 pretest
+> npm run lint
+...
+> splunk-cloudwatch-logs-processor@0.8.1 test
 > node integration-test.js
 
 Received event: {
