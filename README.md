@@ -1,9 +1,20 @@
-# splunk-aws-lambda-blueprints
-Splunk AWS Lambda blueprints for AWS Lambda Console
+# Splunk AWS Lambda Blueprints
+Splunk AWS Lambda blueprints for AWS Lambda console, and associated CloudFormation templates (using [SAM](https://github.com/awslabs/serverless-application-model)) for automated packaging & deployment.
+
+## Table of Contents
+* **[Getting Started](#getting-started)**
+     * **[Prerequisites](#prerequisites)**
+     * **[Installing](#installing)**
+     * **[Packaging](#packaging)**
+     * **[Deploying](#deploying)**
+* **[Development & Test](#development--test)**
+     * **[Available npm tasks](#available-npm-tasks)**
+     * **[Setup test environment](#setup-test-environment)**
+     * **[Run integration test](#run-integration-test)**
 
 ## Getting Started
 
-### Preqrequisites
+### Prerequisites
 - AWS CLI
 - Node.js v4.3 or later.
 - Splunk Enterprise 6.3.0 or later, or Splunk Cloud.
@@ -45,9 +56,9 @@ The command returns a copy of the SAM template, in this case `template.output.ya
 aws cloudformation deploy --template $(pwd)/template.output.yaml --parameter-overrides SplunkHttpEventCollectorURL='https://<my-splunk-ip-or-fqdn>:8088/services/collector' SplunkHttpEventCollectorToken=<my-splunk-hec-token> CloudWatchLogsGroupName=<my-cwl-group-name> --capabilities "CAPABILITY_IAM" --stack-name my-cloudwatch-logs-forwarder-stack
 ```
 
-## Dev & Test
+## Development & Test
 
-### Use npm tasks
+### Available npm tasks
 For each serverless application, you can use the following npm tasks:
 
 | command | description |
