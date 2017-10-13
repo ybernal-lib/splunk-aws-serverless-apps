@@ -3,14 +3,24 @@
   "version": "0.8.1",
   "description": "AWS Lambda function blueprint to stream events from AWS Kinesis to Splunk's HTTP event collector",
   "main": "index.js",
+  "config": {
+    "myS3Bucket":"tarik-kinesis-sam-test",
+    "kinesisStream":"SplunkTestStream",
+    "kinesisPosition":"LATEST",
+    "hecURL":"https://<my-splunk-ip-or-fqdn>:8088/services/collector",
+    "hecToken":"hecToken",
+    "stackName":"SplunkKinesisStack"
+  },
   "scripts": {
     "lint": "eslint -c ../.eslintrc --ignore-path ../.eslintignore .",
     "test": "node integration-test.js",
     "build": "zip -r splunk-kinesis-stream-processor.zip index.js lambda.json lib/",
     "clean": "rm -f splunk-kinesis-stream-processor.zip",
-
     "postinstall": "node -e \"var s='../lib',d='lib',fs=require('fs');fs.exists(d,function(e){e||fs.symlinkSync(s,d,'dir')});\"",
-    "pretest": "npm run lint"
+    "pretest": "npm run lint",
+    "cf-build": "aws cloudformation package --template template.yaml --s3-bucket $npm_package_config_myS3Bucket --output-template-file template.output.yaml",
+    "cf-deploy":"aws cloudformation deploy --template-file $(pwd)/template.output.yaml --parameter-overrides KinesisStreamName=\"$npm_package_config_kinesisStream\" KinesisStreamStartingPosition=\"$npm_package_config_kinesisPosition\" SplunkHttpEventCollectorURL=\"$npm_package_config_hecURL\" SplunkHttpEventCollectorToken=\"$npm_package_config_hecToken\"  --stack-name $npm_package_config_stackName --capabilities \"CAPABILITY_IAM\"",
+    "just-do-it": "npm run build && npm run cf-build && npm run cf-deploy"
   },
   "keywords": [
     "splunk",
