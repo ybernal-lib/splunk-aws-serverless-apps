@@ -35,9 +35,9 @@ Parameters:
       Description: "Token of your Splunk HTTP event collector endpoint"
 
 Outputs:
-    StreamProcessor:
-      Description: "Splunk CloudWatch Logs Lambda Function ARN"
-      Value: !GetAtt StreamProcessor.Arn
+    SplunkKinesisStreamProcessor:
+      Description: "Splunk Kinesis Stream Lambda Function ARN"
+      Value: !GetAtt SplunkKinesisStreamProcessor.Arn
 
 Resources:
     KinesisStreamSubscriptionFilter:
@@ -46,7 +46,7 @@ Resources:
         BatchSize: !Ref KinesisStreamBatchSize
         Enabled: true
         EventSourceArn: !Join [ "", [ "arn:", !Ref "AWS::Partition", ":kinesis:", !Ref "AWS::Region", ":", !Ref "AWS::AccountId", ":stream/", !Ref KinesisStreamName ] ]
-        FunctionName: !GetAtt StreamProcessor.Arn
+        FunctionName: !GetAtt SplunkKinesisStreamProcessor.Arn
         StartingPosition: !Ref KinesisStreamStartingPosition
 
     SplunkKinesisStreamProcessorFunctionIAMRole:
@@ -68,7 +68,7 @@ Resources:
                   Service: 
                     - "lambda.amazonaws.com"
 
-    StreamProcessor:
+    SplunkKinesisStreamProcessor:
       Type: 'AWS::Serverless::Function'
       Properties:
         Handler: index.handler

@@ -1,0 +1,6 @@
+kinesis_s3_bucket=fake-s3-bucket-name
+kinesis_stream_name=fake-stream-name
+kinesis_stream_start_position=LATEST
+kinesis_hec_url=https://192.168.0.0:8088/services/collector
+kinesis_hec_token=FAKE-FAKE-FAKE
+kinesis_stack_name=fakeStackName

@@ -27,11 +27,17 @@ aws s3 mb s3://<my-bucket-name> --region us-east-1
 ```
 
 ### Installing
-
-First, cd into any of the serverless applications:
+First cd into any of the serverless applications:
 ```
 cd splunk-cloudwatch-logs-processor
 ```
+Then run the set:env to initialize your environment.  
+```
+npm run set:env
+```
+Above step will create .npmrc file in your serverless application.
+Modify this file according to your own settings
+
 Then install node package dependencies:
 ```
 npm install
@@ -45,8 +51,9 @@ npm run build
 This will package the necessary Lambda function(s) and dependencies into one local deployment zip `splunk-cloudwatch-logs-processor.zip`
 
 Then upload all local artifacts needed by the SAM template to your previously created S3 bucket by running:
+Before you run this command please encure that you have set correct values in your application .npmrc
 ```
-aws cloudformation package --template template.yaml --s3-bucket <my-bucket-name> --output-template-file template.output.yaml
+npm run cf-build
 ```
 The command returns a copy of the SAM template, in this case `template.output.yaml`, replacing all references to local artifacts with the S3 location where the command uploaded the artifacts. In particular, `CodeUri` property of the Lambda resource points to the deployment zip `splunk-cloudwatch-logs-processor.zip` in the Amazon S3 bucket that you specified.
 
@@ -63,10 +70,14 @@ For each serverless application, you can use the following npm tasks:
 
 | command | description |
 | --- | --- |
+| `npm run set:env`| creates .npmrc file in your local project. set project variables here |
 | `npm run lint` | run eslint rules against .js files |
-| `npm run build` | create zip deployment package with required .js files |
+| `npm run build` | create zip SAM deployment package with required .js files |
+| `npm run cf-build` | uploads SAM deployment package with required template files to AWS S3 Bucket|
+| `npm run cf-deploy` | creates CloudFormation Stack and deploys SAM package from AWS S3 Bucket|
 | `npm run clean` | remove zip deployment package |
 | `npm run test` (or `npm test`) | run simple integration test with live Splunk Enterprise instance. More details in section below. |
+| `npm run just-do-it` | runs `build` then `cf-build` and then `cf-deploy` |
 
 ### Setup test environment
 
