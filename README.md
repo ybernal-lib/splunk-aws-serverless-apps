@@ -68,14 +68,14 @@ aws cloudformation package --template template.yaml --s3-bucket <my-bucket-name>
 The command returns a copy of the SAM template, in this case `template.output.yaml`, replacing all references to local artifacts with the S3 location where the command uploaded the artifacts. In particular, `CodeUri` property of the Lambda resource points to the deployment zip `splunk-cloudwatch-logs-processor.zip` in the Amazon S3 bucket that you specified.
 
 ### Deploying
-**Upload using NPM:**
+**Deploy using NPM:**
 
 Before you run this command please ensure that you have set correct values in your application .npmrc
 ```
 npm run cf-deploy
 ```
 
-**Upload using AWS CLI**
+**Deploy using AWS CLI**
 ```
 aws cloudformation deploy --template $(pwd)/template.output.yaml --parameter-overrides SplunkHttpEventCollectorURL='https://<my-splunk-ip-or-fqdn>:8088/services/collector' SplunkHttpEventCollectorToken=<my-splunk-hec-token> CloudWatchLogsGroupName=<my-cwl-group-name> --capabilities "CAPABILITY_IAM" --stack-name my-cloudwatch-logs-forwarder-stack
 ```
