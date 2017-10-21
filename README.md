@@ -79,8 +79,15 @@ npm run cf-deploy
 ```
 
 **Deploy using AWS CLI**
+Example below is specific to Splunk Splunk CloudWatch Serverless Application. `parameter-overrides` will defer by Splunk Serverless Application and you will need to adjust accordingly
 ```
-aws cloudformation deploy --template $(pwd)/template.output.yaml --parameter-overrides SplunkHttpEventCollectorURL='https://<my-splunk-ip-or-fqdn>:8088/services/collector' SplunkHttpEventCollectorToken=<my-splunk-hec-token> CloudWatchLogsGroupName=<my-cwl-group-name> --capabilities "CAPABILITY_IAM" --stack-name my-cloudwatch-logs-forwarder-stack
+aws cloudformation deploy 
+    --template $(pwd)/template.output.yaml 
+    --parameter-overrides 
+        SplunkHttpEventCollectorURL='https://<my-splunk-ip-or-fqdn>:8088/services/collector' 
+        SplunkHttpEventCollectorToken=<my-splunk-hec-token> 
+        CloudWatchLogsGroupName=<my-cwl-group-name> 
+    --capabilities "CAPABILITY_IAM" --stack-name my-cloudwatch-logs-forwarder-stack
 ```
 
 ## Development & Test
