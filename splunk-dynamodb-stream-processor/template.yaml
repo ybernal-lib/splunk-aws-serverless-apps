@@ -1,0 +1,93 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: 'AWS::Serverless-2016-10-31'
+Description: >
+    Serverless application to stream events from AWS DynamoDB Table to Splunk HTTP Event Collector (HEC).
+
+    This SAM template creates the Lambda function with its IAM execution role, a subscription to DynamoDB table
+    along with a Lambda permission to grant DynamoDB permission to invoke this function. 
+    DynamoDB must be in same region as the region where this stack is created.
+
+    Last Modified: 12 Oct, 2017
+    Authors: Roy Arsan <roy@splunk.com>, Bill Bartlett <bbartlett@splunk.com>, Tarik Makota <tmak@amazon.com>
+
+Parameters:
+    DynamoTableStreamARN: 
+      Type: "String"
+      Description: "Name of DynamoDB table. The Lambda function will be invoked whenever this table is updated."
+    
+    DynamoDBBatchSize: 
+      Type: "Number"
+      Description: "The largest number of records that AWS Lambda will retrieve from your table at the time of invoking your function. Your function receives an event with all the retrieved records."
+      Default: "100"
+
+    DynamoDBStartingPosition:
+      Type: "String"
+      Description: "The position in the stream where AWS Lambda should start reading. For more information, see ShardIteratorType in the Amazon Kinesis API Reference."
+      AllowedValues: [ "TRIM_HORIZON", "LATEST"]
+      Default: "LATEST" #email Roy and ask/confirm
+
+    SplunkHttpEventCollectorURL:
+      Type: "String"
+      Description: "URL address of your Splunk HTTP event collector endpoint"
+
+    SplunkHttpEventCollectorToken:
+      Type: "String"
+      Description: "Token of your Splunk HTTP event collector endpoint"
+    
+    CreationDate:
+      Description : "Date of the creation to be used for ARN"
+      Type : "String"
+      Default : "2017-10-16 21:15:00"
+      AllowedPattern : "^\\d{4}(-\\d{2}){2} (\\d{2}:){2}\\d{2}$"
+      ConstraintDescription : "Date and time of creation"
+
+Outputs:
+    SplunkDynamoDBProcessor:
+      Description: "Splunk Kinesis Stream Lambda Function ARN"
+      Value: !GetAtt SplunkDynamoDBProcessor.Arn
+
+Resources:
+    DynamoDBSubscriptionFilter:
+      Type: "AWS::Lambda::EventSourceMapping"
+      Properties: 
+        BatchSize: !Ref DynamoDBBatchSize
+        Enabled: true
+        EventSourceArn: !Ref DynamoTableStreamARN
+        FunctionName: !GetAtt SplunkDynamoDBProcessor.Arn
+        StartingPosition: !Ref DynamoDBStartingPosition
+
+    SplunkDynamoDBProcessorFunctionIAMRole:
+      Type: "AWS::IAM::Role"
+      Properties:
+          Path: "/"
+          ManagedPolicyArns:
+              - "arn:aws:iam::aws:policy/service-role/AWSLambdaDynamoDBExecutionRole"
+              - "arn:aws:iam::aws:policy/AmazonDynamoDBReadOnlyAccess"
+          AssumeRolePolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              -
+                Sid: "AllowLambdaServiceToAssumeRole"
+                Effect: "Allow"
+                Action: 
+                  - "sts:AssumeRole"
+                Principal:
+                  Service: 
+                    - "lambda.amazonaws.com"
+
+    SplunkDynamoDBProcessor:
+      Type: 'AWS::Serverless::Function'
+      Properties:
+        Handler: index.handler
+        Runtime: nodejs6.10
+        CodeUri: ./splunk-dynamodb-stream-processor.zip
+        Role: !GetAtt SplunkDynamoDBProcessorFunctionIAMRole.Arn
+        Description: Stream events from DynamoDB Table to Splunk HTTP event collector
+        MemorySize: 512
+        Timeout: 10
+        Environment:
+          Variables:
+            SPLUNK_HEC_URL: !Ref SplunkHttpEventCollectorURL
+            SPLUNK_HEC_TOKEN: !Ref SplunkHttpEventCollectorToken
+
+  

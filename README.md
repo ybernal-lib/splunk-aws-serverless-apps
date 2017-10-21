@@ -32,11 +32,11 @@ First cd into any of the serverless applications:
 cd splunk-cloudwatch-logs-processor
 ```
 Then run the set:env to initialize your environment.  
+This will create .npmrc file in your serverless application.
+Modify this file according to your own settings
 ```
 npm run set:env
 ```
-Above step will create .npmrc file in your serverless application.
-Modify this file according to your own settings
 
 Then install node package dependencies:
 ```
@@ -50,14 +50,28 @@ npm run build
 ```
 This will package the necessary Lambda function(s) and dependencies into one local deployment zip `splunk-cloudwatch-logs-processor.zip`
 
-Then upload all local artifacts needed by the SAM template to your previously created S3 bucket by running:
-Before you run this command please encure that you have set correct values in your application .npmrc
+Then upload all local artifacts needed by the SAM template to your previously created S3 bucket.
+You can do this either using npm or AWS CLI
+
+Upload using NPM:
+Before you run this command please ensure that you have set correct values in your application .npmrc
 ```
 npm run cf-build
 ```
+
+Upload using AWS CLI
+```
+aws cloudformation package --template template.yaml --s3-bucket <my-bucket-name> --output-template-file template.output.yaml
+```
+
 The command returns a copy of the SAM template, in this case `template.output.yaml`, replacing all references to local artifacts with the S3 location where the command uploaded the artifacts. In particular, `CodeUri` property of the Lambda resource points to the deployment zip `splunk-cloudwatch-logs-processor.zip` in the Amazon S3 bucket that you specified.
 
 ### Deploying
+Upload using NPM:
+Before you run this command please ensure that you have set correct values in your application .npmrc
+```
+npm run cf-deploy
+```
 
 ```
 aws cloudformation deploy --template $(pwd)/template.output.yaml --parameter-overrides SplunkHttpEventCollectorURL='https://<my-splunk-ip-or-fqdn>:8088/services/collector' SplunkHttpEventCollectorToken=<my-splunk-hec-token> CloudWatchLogsGroupName=<my-cwl-group-name> --capabilities "CAPABILITY_IAM" --stack-name my-cloudwatch-logs-forwarder-stack
@@ -81,6 +95,10 @@ For each serverless application, you can use the following npm tasks:
 
 ### Setup test environment
 
+>>>> This section requires updates <<<<
+i.e. instead of setEnv can use
+"test": "SPLUNK_HEC_URL=$npm_config_kinesis_hec_url SPLUNK_HEC_TOKEN=$npm_config_kinesis_hec_token node integration-test.js",
+    
 For test-driven development, you can easily run a simple integration test as you develop the Lambda function.
 First, copy over the provided setEnv bash script in root folder:
 ```

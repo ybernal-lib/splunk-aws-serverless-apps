@@ -1,0 +1,6 @@
+alb_s3_bucket=fake-s3-bucket-name
+alb_stream_name=fake-stream-name
+alb_stream_start_position=LATEST
+alb_hec_url=https://192.168.0.0:8088/services/collector
+alb_hec_token=FAKE-FAKE-FAKE
+alb_stack_name=fakeStackName

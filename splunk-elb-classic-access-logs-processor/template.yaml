@@ -1,7 +1,7 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: 'AWS::Serverless-2016-10-31'
 Description: >
-    Serverless application to stream events from AWS Kinesis to Splunk HTTP Event Collector (HEC).
+    Serverless application to Stream Application ELB access logs from S3 to Splunk's HTTP event collector (HEC).
 
     This SAM template creates the Lambda function with its IAM execution role, a subscription to Kinesis stream
     along with a Lambda permission to grant Kinesis Stream permission

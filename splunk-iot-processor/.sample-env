@@ -1,0 +1,6 @@
+iot_s3_bucket=fake-s3-bucket-name
+iot_stream_name=fake-stream-name
+iot_stream_start_position=LATEST
+iot_hec_url=https://192.168.0.0:8088/services/collector
+iot_hec_token=FAKE-FAKE-FAKE
+iot_stack_name=fakeStackName

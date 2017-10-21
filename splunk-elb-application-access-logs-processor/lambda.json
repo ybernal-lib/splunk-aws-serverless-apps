@@ -25,10 +25,12 @@
     "splunk",
     "elb",
     "s3",
-    "application-elb"
+    "application-elb",
+    "cloudtrail"
   ],
   "authors": [
-    "Roy Arsan <roy@splunk.com> (https://www.splunk.com)"
+    "Roy Arsan <roy@splunk.com> (https://www.splunk.com)",
+    "Tarik Makota <tmak@amazon.com> (https://aws.amazon.com)"
   ],
   "roleTemplates": [
     "S3"
