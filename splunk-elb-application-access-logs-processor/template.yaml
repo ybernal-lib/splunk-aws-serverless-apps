@@ -45,13 +45,13 @@ Outputs:
       Value: !Ref SplunkALBProcessorFunction
 
 Resources:
-  BucketConfiguration:
-    Type: Custom::S3BucketConfiguration
+  S3BucketEventConfiguration:
+    Type: Custom::S3BucketEventConfiguration
     DependsOn:
-    - BucketPermission
+    - S3BucketPermission
     - NotificationBucketPolicy
     Properties:
-      ServiceToken: !GetAtt S3BucketConfiguration.Arn
+      ServiceToken: !GetAtt S3BucketEventConfigurationFunction.Arn
       Bucket: !Ref S3ALBLogsBucketName
       NotificationConfiguration:
         LambdaFunctionConfigurations:
@@ -102,7 +102,7 @@ Resources:
             Principal:
               AWS: !GetAtt LambdaExecutionRole.Arn
 
-  BucketPermission:
+  S3BucketPermission:
     Type: AWS::Lambda::Permission
     Properties:
       Action: 'lambda:InvokeFunction'
@@ -111,7 +111,7 @@ Resources:
       SourceAccount: !Ref "AWS::AccountId"
       SourceArn: !Sub "arn:aws:s3:::${S3ALBLogsBucketName}"
 
-  S3BucketConfiguration:
+  S3BucketEventConfigurationFunction:
     Type: 'AWS::Serverless::Function'
     Properties:
       Description: S3 Object Custom Resource
