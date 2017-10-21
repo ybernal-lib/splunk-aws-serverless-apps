@@ -1,0 +1,137 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: 'AWS::Serverless-2016-10-31'
+Description: >
+    Serverless application to Stream Application ELB access logs from S3 to Splunk's HTTP event collector (HEC).
+
+    This SAM template creates the Lambda function with its IAM execution role, a subscription to S3 Bucket stream
+    along with a Lambda permission to grant S3 Bucket Stream permission to invoke this function. 
+    S3 Bucket Stream must be in same region as the region where this stack is created.
+
+    Last Modified: 12 Oct, 2017
+    Authors: Roy Arsan <roy@splunk.com>, Bill Bartlett <bbartlett@splunk.com>, Tarik Makota <tmak@amazon.com>
+
+Parameters:
+  S3ALBLogsBucketName:
+    Type: "String"
+    Description: "Please select the S3 bucket that serves as the event source. The bucket must be in the same region as the function."
+  
+  S3EventType: 
+    Type: "String"
+    Description: "Select the events that you want to have trigger the Lambda function. For list of supported event types see: http://docs.aws.amazon.com/AmazonS3/latest/dev/NotificationHowTo.html#supported-notification-event-types"
+    AllowedValues: ["s3:ObjectCreated:*","s3:ObjectCreated:Put", "s3:ObjectCreated:Post","s3:ObjectCreated:Copy" ,"s3:ObjectCreated:CompleteMultipartUpload"]
+    Default: "s3:ObjectCreated:Copy"
+
+  S3Prefix:
+    Type: "String"
+    Description: "Enter an optional prefix to limit the notifications to objects with keys that start with matching characters. e.g. uploadedImages/"
+    Default: ""
+
+  S3Suffix:
+    Type: "String"
+    Description: "Enter an optional suffix to limit the notifications to objects with keys that end with matching characters.. e.g. .jpge"
+    Default: ""
+
+  SplunkHttpEventCollectorURL:
+    Type: "String"
+    Description: "URL address of your Splunk HTTP event collector endpoint"
+
+  SplunkHttpEventCollectorToken:
+    Type: "String"
+    Description: "Token of your Splunk HTTP event collector endpoint"
+    
+Outputs:
+    SplunkALBLogsProcessor:
+      Description: "Splunk S3 Bucket Stream Lambda Function ARN"
+      Value: !Ref SplunkALBProcessorFunction
+
+Resources:
+  BucketConfiguration:
+    Type: Custom::S3BucketConfiguration
+    DependsOn:
+    - BucketPermission
+    - NotificationBucketPolicy
+    Properties:
+      ServiceToken: !GetAtt S3BucketConfiguration.Arn
+      Bucket: !Ref S3ALBLogsBucketName
+      NotificationConfiguration:
+        LambdaFunctionConfigurations:
+        - Events: [!Sub "${S3EventType}"]
+          LambdaFunctionArn: !GetAtt SplunkALBProcessorFunction.Arn
+          Filter:
+              Key:
+                FilterRules:
+                  -
+                    Name: prefix
+                    Value: !Sub "${S3Prefix}"
+                  -
+                    Name: suffix
+                    Value: !Sub "${S3Suffix}"
+  LambdaExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Principal: {Service: [lambda.amazonaws.com]}
+          Action: ['sts:AssumeRole']
+      Path: /
+      ManagedPolicyArns:
+      - "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+      Policies:
+      - PolicyName: S3Policy
+        PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+            - Effect: Allow
+              Action:
+                - 's3:PutObject'
+                - 'S3:DeleteObject'
+              Resource: !Sub "arn:aws:s3:::${S3ALBLogsBucketName}"
+
+  NotificationBucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref S3ALBLogsBucketName
+      PolicyDocument:
+        Statement:
+          - Effect: "Allow"
+            Action:
+            - 's3:PutBucketNotification'
+            Resource: !Sub "arn:aws:s3:::${S3ALBLogsBucketName}"
+            Principal:
+              AWS: !GetAtt LambdaExecutionRole.Arn
+
+  BucketPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: 'lambda:InvokeFunction'
+      FunctionName: !Ref SplunkALBProcessorFunction
+      Principal: s3.amazonaws.com
+      SourceAccount: !Ref "AWS::AccountId"
+      SourceArn: !Sub "arn:aws:s3:::${S3ALBLogsBucketName}"
+
+  S3BucketConfiguration:
+    Type: 'AWS::Serverless::Function'
+    Properties:
+      Description: S3 Object Custom Resource
+      Handler: createbucket.handler
+      CodeUri: ./splunk-elb-application-access-logs-processor.zip
+      Role: !GetAtt LambdaExecutionRole.Arn
+      Timeout: 30
+      Runtime: nodejs6.10
+
+  SplunkALBProcessorFunction:
+    Type: 'AWS::Serverless::Function'
+    Properties:
+      Description: Stream ALB events from S3 to Splunk HTTP event collector
+      Handler: index.handler
+      Runtime: nodejs6.10
+      CodeUri: ./splunk-elb-application-access-logs-processor.zip
+      Role: !GetAtt LambdaExecutionRole.Arn
+      MemorySize: 512
+      Timeout: 10
+      Environment:
+        Variables:
+          SPLUNK_HEC_URL: !Ref SplunkHttpEventCollectorURL
+          SPLUNK_HEC_TOKEN: !Ref SplunkHttpEventCollectorToken

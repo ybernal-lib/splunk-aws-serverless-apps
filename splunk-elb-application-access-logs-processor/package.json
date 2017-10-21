@@ -12,7 +12,7 @@
     "pretest": "npm run lint",
     "set:env": "node ../setup.js",
     "cf-build": "aws cloudformation package --template template.yaml --s3-bucket $npm_config_alb_template_s3_bucket_name --output-template-file template.output.yaml",
-    "cf-deploy":"aws cloudformation deploy --template-file $(pwd)/template.output.yaml --parameter-overrides S3ALBLogsBucketName=\"$npm_config_alb_s3_alb_logs_bucket\" S3EventType=\"$npm_config_alb_s3_event_type\" SplunkHttpEventCollectorURL=\"$npm_config_alb_hec_url\" SplunkHttpEventCollectorToken=\"$npm_config_alb_hec_token\"  --stack-name $npm_config_alb_stack_name --capabilities \"CAPABILITY_IAM\"",
+    "cf-deploy":"aws cloudformation deploy --template-file $(pwd)/template.output.yaml --parameter-overrides S3ALBLogsBucketName=\"$npm_config_alb_s3_alb_logs_bucket\" S3EventType=\"$npm_config_alb_s3_event_type\" S3Prefix=\"$npm_config_alb_s3_prefix\" S3Suffix=\"$npm_config_alb_s3_suffix\" SplunkHttpEventCollectorURL=\"$npm_config_alb_hec_url\" SplunkHttpEventCollectorToken=\"$npm_config_alb_hec_token\"  --stack-name $npm_config_alb_stack_name --capabilities \"CAPABILITY_IAM\"",
     "just-do-it": "npm run build && npm run cf-build && npm run cf-deploy"
   },
   "keywords": [
