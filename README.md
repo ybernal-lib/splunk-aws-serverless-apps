@@ -33,7 +33,7 @@ cd splunk-cloudwatch-logs-processor
 ```
 Then run the set:env to initialize your environment.  
 This will create .npmrc file in your serverless application.
-Modify this file according to your own settings
+Modify this file according to match your own settings
 ```
 npm run set:env
 ```
@@ -44,14 +44,14 @@ npm install
 ```
 
 ### Packaging
-Then build the function deployment package:
+To build the Serverles Application Module deployment package:
 ```
 npm run build
 ```
-This will package the necessary Lambda function(s) and dependencies into one local deployment zip `splunk-cloudwatch-logs-processor.zip`
+This will package the necessary Lambda function(s) and dependencies into one local deployment zip as specified in `package.json` build script. i.e. for Splunk CloudWatch Serverless Application it creates `splunk-cloudwatch-logs-processor.zip`
 
 Then upload all local artifacts needed by the SAM template to your previously created S3 bucket.
-You can do this either using npm or AWS CLI
+You can do this either using **npm** or **AWS CLI**
 
 **Upload using NPM:**
 
@@ -62,7 +62,10 @@ npm run cf-build
 
 **Upload using AWS CLI**
 ```
-aws cloudformation package --template template.yaml --s3-bucket <my-bucket-name> --output-template-file template.output.yaml
+aws cloudformation package 
+    --template template.yaml 
+    --s3-bucket <my-bucket-name> 
+    --output-template-file template.output.yaml
 ```
 
 The command returns a copy of the SAM template, in this case `template.output.yaml`, replacing all references to local artifacts with the S3 location where the command uploaded the artifacts. In particular, `CodeUri` property of the Lambda resource points to the deployment zip `splunk-cloudwatch-logs-processor.zip` in the Amazon S3 bucket that you specified.
