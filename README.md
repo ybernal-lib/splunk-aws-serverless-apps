@@ -79,6 +79,7 @@ npm run cf-deploy
 ```
 
 **Deploy using AWS CLI**
+
 Example below is specific to Splunk Splunk CloudWatch Serverless Application. `parameter-overrides` will defer by Splunk Serverless Application and you will need to adjust accordingly
 ```
 aws cloudformation deploy 
