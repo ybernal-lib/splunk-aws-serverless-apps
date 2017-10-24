@@ -1,8 +1,8 @@
-alb_template_s3_bucket_name = fake-bucket-name
-alb_s3_alb_logs_bucket=fake-s3-bucket-name
-alb_s3_event_type=fake-s3-event type
-alb_s3_prefix= 
-alb_s3_suffix= 
-alb_hec_url=https://192.168.0.0:8088/services/collector
-alb_hec_token=FAKE-FAKE-FAKE
-alb_stack_name=fakeStackName
+sam_alb_s3_bucket_name = fake-bucket-name
+parm_s3_logs_bucket=fake-s3-bucket-name
+parm_s3_event_type=fake-s3-event type
+parm_s3_prefix= 
+parm_s3_suffix= 
+parm_hec_url=https://192.168.0.0:8088/services/collector
+parm_hec_token=FAKE-FAKE-FAKE
+parm_stack_name=fakeStackName
