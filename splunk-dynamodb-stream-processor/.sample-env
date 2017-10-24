@@ -1,7 +1,7 @@
-dynamodb_s3_bucket = fake-s3-bucket
-dynamodb_table_name = fakeTableName
-dynamodb_table_stream_arn = arn:aws:dynamodb:<region>:<account>:table/<table name>/stream/<36337357357>
-dynamodb_start_position = LATEST
-dynamodb_hec_url = https://192.168.0.0:8088/services/collector
-dynamodb_hec_token = FAKE-HEC-TOKEN
-dynamodb_stack_name = FakeDynamoDBStack
+sam_dynamodb_s3_bucket = fake-s3-bucket
+parm_table_name = fakeTableName
+parm_table_stream_arn = arn:aws:dynamodb:<region>:<account>:table/<table name>/stream/<36337357357>
+parm_start_position = LATEST
+parm_hec_url = https://192.168.0.0:8088/services/collector
+parm_hec_token = FAKE-HEC-TOKEN
+parm_stack_name = FakeDynamoDBStack

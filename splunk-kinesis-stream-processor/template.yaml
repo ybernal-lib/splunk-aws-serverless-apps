@@ -24,7 +24,7 @@ Parameters:
       Type: "String"
       Description: "The position in the stream where AWS Lambda should start reading. For more information, see ShardIteratorType in the Amazon Kinesis API Reference."
       AllowedValues: ["AT_TIMESTAMP", "TRIM_HORIZON", "LATEST"]
-      Default: "LATEST" #email Roy and ask/confirm
+      Default: "LATEST" 
 
     SplunkHttpEventCollectorURL:
       Type: "String"
