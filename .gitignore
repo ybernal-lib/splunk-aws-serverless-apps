@@ -4,7 +4,7 @@ node_modules
 .npmrc
 
 # backup for local testing
-.backup
+*.backup
 
 # Artifacts from build & test
 *.zip

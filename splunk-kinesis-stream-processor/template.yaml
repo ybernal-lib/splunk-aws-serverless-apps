@@ -55,7 +55,21 @@ Resources:
           Path: "/"
           ManagedPolicyArns:
               - "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
-              - "arn:aws:iam::aws:policy/service-role/AWSLambdaKinesisExecutionRole"
+          Policies: 
+          - 
+            PolicyName: "SplunkKinesisStream"
+            PolicyDocument: 
+              Version: "2012-10-17"
+              Statement: 
+              - 
+                Effect: "Allow"
+                Action: 
+                - kinesis:DescribeStream
+                - kinesis:GetRecords
+                - kinesis:GetShardIterator
+                - kinesis:ListStreams 
+                Resource: 
+                  - !Join [ "", [ "arn:", !Ref "AWS::Partition", ":kinesis:", !Ref "AWS::Region", ":", !Ref "AWS::AccountId", ":stream/", !Ref KinesisStreamName ] ]
           AssumeRolePolicyDocument:
             Version: "2012-10-17"
             Statement:
