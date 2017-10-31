@@ -6,11 +6,15 @@
   "scripts": {
     "lint": "eslint -c ../.eslintrc --ignore-path ../.eslintignore .",
     "test": "node integration-test.js",
-    "build": "zip -r splunk-logging.zip index.js lambda.json lib/",
     "clean": "rm -f splunk-logging.zip",
 
     "postinstall": "node -e \"var s='../lib',d='lib',fs=require('fs');fs.exists(d,function(e){e||fs.symlinkSync(s,d,'dir')});\"",
-    "pretest": "npm run lint"
+    "pretest": "npm run lint",
+
+    "build:zip": "zip -r splunk-logging.zip index.js lambda.json lib/",
+    "build:template": "aws cloudformation package --template template.yaml --s3-bucket $npm_config_sam_s3_bucket_name --output-template-file template.output.yaml",
+    "build:deployment": "aws cloudformation deploy --template-file $(pwd)/template.output.yaml --parameter-overrides SplunkHttpEventCollectorURL=\"$npm_config_parm_hec_url\" SplunkHttpEventCollectorToken=\"$npm_config_parm_hec_token\"  --stack-name $npm_config_parm_stack_name --capabilities \"CAPABILITY_IAM\"",
+    "build": "npm run build:zip && npm run build:template && npm run build:deployment"
   },
   "keywords": [
     "splunk",
@@ -20,7 +24,8 @@
   ],
   "authors": [
     "Roy Arsan <rarsan@splunk.com> (https://www.splunk.com)",
-    "Glenn Block <gblock@splunk.com> (https://www.splunk.com)"
+    "Glenn Block <gblock@splunk.com> (https://www.splunk.com)",
+    "Tarik Makota <tmak@amazon.com> (https://aws.amazon.com)"
   ],
   "license": "CC0-1.0",
   "dependencies": {},
