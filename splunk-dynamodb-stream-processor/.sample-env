@@ -1,7 +1,8 @@
 sam_s3_bucket_name = fake-s3-bucket
 parm_table_name = fakeTableName
-parm_table_stream_arn = arn:aws:dynamodb:<region>:<account>:table/<table name>/stream/<36337357357>
-parm_start_position = LATEST
+parm_stream_arn = arn:aws:dynamodb:<region>:<account>:table/<table name>/stream/<36337357357>
+parm_stream_starting_position = LATEST
+parm_stream_batch_size = 100
 parm_hec_url = https://192.168.0.0:8088/services/collector
 parm_hec_token = FAKE-HEC-TOKEN
 parm_stack_name = FakeDynamoDBStack

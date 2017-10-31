@@ -12,7 +12,7 @@
     "pretest": "npm run lint",
     "set:env": "node ../setup.js",
     "cf-build": "aws cloudformation package --template template.yaml --s3-bucket $npm_config_sam_s3_bucket_name --output-template-file template.output.yaml",
-    "cf-deploy":"aws cloudformation deploy --template-file $(pwd)/template.output.yaml --parameter-overrides DynamoTableName=\"$npm_config_parm_table_name\" DynamoTableStreamARN=\"$npm_config_parm_table_stream_arn\" DynamoDBStartingPosition=\"$npm_config_parm_start_position\" SplunkHttpEventCollectorURL=\"$npm_config_parm_hec_url\" SplunkHttpEventCollectorToken=\"$npm_config_parm_hec_token\" CreationDate=\"$(date +'%F %T')\" --stack-name $npm_config_parm_stack_name --capabilities \"CAPABILITY_IAM\"",
+    "cf-deploy":"aws cloudformation deploy --template-file $(pwd)/template.output.yaml --parameter-overrides DynamoDBTableName=\"$npm_config_parm_table_name\" DynamoDBStreamARN=\"$npm_config_parm_stream_arn\" DynamoDBStreamStartingPosition=\"$npm_config_parm_stream_starting_position\" DynamoDBStreamBatchSize=\"$npm_config_parm_stream_batch_size\" SplunkHttpEventCollectorURL=\"$npm_config_parm_hec_url\" SplunkHttpEventCollectorToken=\"$npm_config_parm_hec_token\" CreationDate=\"$(date +'%F %T')\" --stack-name $npm_config_parm_stack_name --capabilities \"CAPABILITY_IAM\"",
     "just-do-it": "npm run build && npm run cf-build && npm run cf-deploy"
   },
   "keywords": [
