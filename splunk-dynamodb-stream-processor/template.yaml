@@ -44,15 +44,6 @@ Outputs:
       Value: !GetAtt SplunkDynamoDBProcessor.Arn
 
 Resources:
-    DynamoDBSubscriptionFilter:
-      Type: "AWS::Lambda::EventSourceMapping"
-      Properties: 
-        BatchSize: !Ref DynamoDBBatchSize
-        Enabled: true
-        EventSourceArn: !Ref DynamoTableStreamARN
-        FunctionName: !GetAtt SplunkDynamoDBProcessor.Arn
-        StartingPosition: !Ref DynamoDBStartingPosition
-
     SplunkDynamoDBProcessorFunctionIAMRole:
       Type: "AWS::IAM::Role"
       Properties:
@@ -100,5 +91,11 @@ Resources:
           Variables:
             SPLUNK_HEC_URL: !Ref SplunkHttpEventCollectorURL
             SPLUNK_HEC_TOKEN: !Ref SplunkHttpEventCollectorToken
-
+        Events:
+          TableStream:
+            Type: DynamoDB
+            Properties:
+              Stream: !Ref DynamoTableStreamARN
+              StartingPosition: !Ref DynamoDBStartingPosition
+              BatchSize: !Ref DynamoDBBatchSize
   
