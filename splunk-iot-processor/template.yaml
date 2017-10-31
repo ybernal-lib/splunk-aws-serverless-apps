@@ -1,19 +1,22 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: 'AWS::Serverless-2016-10-31'
 Description: >
-    Serverless application to stream events from AWS CloudWatch Logs to Splunk HTTP Event Collector (HEC).
+    Serverless application to respond to events from the IoT trigger and send to Splunk HTTP Event Collector (HEC).
 
-    This SAM template creates the Lambda function with its IAM execution role, a CloudWatch Logs subscription
-    filter for user-provided log group, along with a Lambda permission to grant CloudWatch Logs permission
-    to invoke this function. Log group must be in same region as the region where this stack is created.
+    This SAM template creates the Lambda function with its IAM execution role, 
 
     Last Modified: 06 Oct, 2017
     Authors: Roy Arsan <roy@splunk.com>, Bill Bartlett <bbartlett@splunk.com>, Tarik Makota <tmak@amazon.com>
 
 Parameters:
-    CloudWatchLogsGroupName: 
+    IoTRule: 
       Type: "String"
-      Description: "Name of a CloudWatch log group (must be in the same region)"
+      Description: "Name of a AWS IoT rule. In AWS IoT Console under 'Act' you'll have see your existing Rules"
+
+    AwsIotSqlVersion:
+      Type: "String"
+      Description: "IoT SQL Version (if not sure leave as deafult)"
+      Default: "2016-03-23"
 
     SplunkHttpEventCollectorURL:
       Type: "String"
@@ -24,63 +27,28 @@ Parameters:
       Description: "Token of your Splunk HTTP event collector endpoint"
 
 Outputs:
-    SplunkCloudWatchLogsProcessorFunction:
-      Description: "Splunk CloudWatch Logs Lambda Function ARN"
-      Value: !GetAtt SplunkCloudWatchLogsProcessorFunction.Arn
+    SplunkIoTProcessorFunction:
+      Description: "Splunk IoT Serverless Function"
+      Value: !GetAtt IoTFunction.Arn
 
 Resources:
-    CloudWatchLogsSubscriptionFilter:
-      Type: "AWS::Logs::SubscriptionFilter"
-      DependsOn: CloudWatchLogsLambdaPermission
-      Properties:
-        DestinationArn: !GetAtt SplunkCloudWatchLogsProcessorFunction.Arn
-        LogGroupName: !Ref CloudWatchLogsGroupName
-        FilterPattern: ""
-
-    CloudWatchLogsLambdaPermission:
-      Type: "AWS::Lambda::Permission"
-      Properties: 
-        Action: "lambda:InvokeFunction"
-        FunctionName: !GetAtt SplunkCloudWatchLogsProcessorFunction.Arn
-        Principal: !Join
-          - "."
-          - [ "logs", !Ref "AWS::Region", !Ref "AWS::URLSuffix" ]
-        SourceAccount: !Ref "AWS::AccountId"
-        SourceArn: !Join
-          - ":"
-          - [ "arn", !Ref "AWS::Partition", "logs", !Ref "AWS::Region", !Ref "AWS::AccountId", "log-group", !Ref CloudWatchLogsGroupName, "*" ]
-
-    SplunkCloudWatchLogsProcessorFunctionIAMRole:
-      Type: "AWS::IAM::Role"
-      Properties:
-          Path: "/"
-          ManagedPolicyArns:
-              - "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
-          AssumeRolePolicyDocument:
-            Version: "2012-10-17"
-            Statement:
-              -
-                Sid: "AllowLambdaServiceToAssumeRole"
-                Effect: "Allow"
-                Action: 
-                  - "sts:AssumeRole"
-                Principal:
-                  Service: 
-                    - "lambda.amazonaws.com"
-
-    SplunkCloudWatchLogsProcessorFunction:
-      Type: 'AWS::Serverless::Function'
-      Properties:
-        Handler: index.handler
-        Runtime: nodejs6.10
-        CodeUri: ./splunk-cloudwatch-logs-processor.zip
-        Role: !GetAtt SplunkCloudWatchLogsProcessorFunctionIAMRole.Arn
-        Description: Stream events from AWS CloudWatch Logs to Splunk HTTP event collector
-        MemorySize: 512
-        Timeout: 30
-        Environment:
+  IoTFunction: 
+    Type: AWS::Serverless::Function
+    Properties: 
+      Handler: index.handler
+      Runtime: nodejs6.10
+      CodeUri: ./splunk-iot-processor.zip
+      Policies: AWSLambdaBasicExecutionRole
+      Description: Capture events from IOT topic and send to Splunk HTTP event collector
+      MemorySize: 512
+      Timeout: 10
+      Environment:
           Variables:
             SPLUNK_HEC_URL: !Ref SplunkHttpEventCollectorURL
             SPLUNK_HEC_TOKEN: !Ref SplunkHttpEventCollectorToken
-
-  
+      Events: 
+        IoT: 
+          Type: IoTRule
+          Properties: 
+            AwsIotSqlVersion: !Ref AwsIotSqlVersion
+            Sql: !Join [ "", [ "SELECT * FROM '", !Ref IoTRule, "/+'" ] ] 
