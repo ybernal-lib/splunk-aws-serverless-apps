@@ -9,7 +9,6 @@
     "clean": "rm -f splunk-iot-processor.zip",
     "postinstall": "node -e \"var s='../lib',d='lib',fs=require('fs');fs.exists(d,function(e){e||fs.symlinkSync(s,d,'dir')});\"",
     "pretest": "npm run lint",
-    "set:env": "node ../setup.js",
 
     "build:zip": "zip -r splunk-iot-processor.zip index.js lambda.json lib/",
     "build:template": "aws cloudformation package --template template.yaml --s3-bucket $npm_config_sam_s3_bucket_name --output-template-file template.output.yaml",

@@ -6,7 +6,6 @@
   "scripts": {
     "lint": "eslint -c ../.eslintrc --ignore-path ../.eslintignore .",
     "test": "SPLUNK_HEC_URL=$npm_config_parm_hec_url SPLUNK_HEC_TOKEN=$npm_config_parm_hec_token node integration-test.js",
-    "set:env": "node ../setup.js",
     "clean": "rm -f splunk-kinesis-stream-processor.zip",
     "postinstall": "node -e \"var s='../lib',d='lib',fs=require('fs');fs.exists(d,function(e){e||fs.symlinkSync(s,d,'dir')});\"",
     "x-pretest": "npm run lint",
