@@ -11,20 +11,20 @@ Description: >
     Authors: Roy Arsan <roy@splunk.com>, Bill Bartlett <bbartlett@splunk.com>, Tarik Makota <tmak@amazon.com>
 
 Parameters:
-  DynamoTableName: 
+  DynamoDBTableName: 
     Type: "String"
     Description: "Name of DynamoDB table. The Lambda function will be invoked whenever this table is updated."
     
-  DynamoTableStreamARN: 
+  DynamoDBStreamARN: 
     Type: "String"
     Description: "ARN of DynamoDB table Stream. The Lambda function will be invoked whenever this stream is updated."
   
-  DynamoDBBatchSize: 
+  DynamoDBStreamBatchSize: 
     Type: "Number"
     Description: "The largest number of records that AWS Lambda will retrieve from your table at the time of invoking your function. Your function receives an event with all the retrieved records."
     Default: "100"
 
-  DynamoDBStartingPosition:
+  DynamoDBStreamStartingPosition:
     Type: "String"
     Description: "The position in the stream where AWS Lambda should start reading. For more information, see ShardIteratorType in the Amazon DynamoDB API Reference."
     AllowedValues: [ "TRIM_HORIZON", "LATEST"]
@@ -44,15 +44,6 @@ Outputs:
       Value: !GetAtt SplunkDynamoDBProcessor.Arn
 
 Resources:
-    DynamoDBSubscriptionFilter:
-      Type: "AWS::Lambda::EventSourceMapping"
-      Properties: 
-        BatchSize: !Ref DynamoDBBatchSize
-        Enabled: true
-        EventSourceArn: !Ref DynamoTableStreamARN
-        FunctionName: !GetAtt SplunkDynamoDBProcessor.Arn
-        StartingPosition: !Ref DynamoDBStartingPosition
-
     SplunkDynamoDBProcessorFunctionIAMRole:
       Type: "AWS::IAM::Role"
       Properties:
@@ -73,7 +64,7 @@ Resources:
                 - dynamodb:GetShardIterator
                 - dynamodb:ListStreams 
                 Resource: 
-                  - !Join [ "", [ "arn:", !Ref "AWS::Partition", ":dynamodb:", !Ref "AWS::Region", ":", !Ref "AWS::AccountId", ":table/", !Ref DynamoTableName, "/stream/*" ] ]
+                  - !Join [ "", [ "arn:", !Ref "AWS::Partition", ":dynamodb:", !Ref "AWS::Region", ":", !Ref "AWS::AccountId", ":table/", !Ref DynamoDBTableName, "/stream/*" ] ]
           AssumeRolePolicyDocument:
             Version: "2012-10-17"
             Statement:
@@ -100,5 +91,11 @@ Resources:
           Variables:
             SPLUNK_HEC_URL: !Ref SplunkHttpEventCollectorURL
             SPLUNK_HEC_TOKEN: !Ref SplunkHttpEventCollectorToken
-
+        Events:
+          TableStream:
+            Type: DynamoDB
+            Properties:
+              Stream: !Ref DynamoDBStreamARN
+              StartingPosition: !Ref DynamoDBStreamStartingPosition
+              BatchSize: !Ref DynamoDBStreamBatchSize
   

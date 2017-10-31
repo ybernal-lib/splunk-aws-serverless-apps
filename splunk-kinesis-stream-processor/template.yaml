@@ -14,7 +14,7 @@ Parameters:
       Type: "String"
       Description: "Name of a Kinesis stream (must be in the same region). The Lambda function will be invoked whenever this stream is updated."
     
-    KinesisStreamBatchSize: 
+    KinesisStreamBatchSize:
       Type: "Number"
       Description: "The largest number of records that AWS Lambda will retrieve from your stream at the time of invoking your function. Your function receives an event with all the retrieved records."
       Default: "100"
