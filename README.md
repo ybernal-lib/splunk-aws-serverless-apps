@@ -31,13 +31,14 @@ First cd into any of the serverless applications:
 ```
 cd splunk-cloudwatch-logs-processor
 ```
-Then run the set:env to initialize your environment.  
-This will create .npmrc file in your serverless application.
-Modify this file according to match your own settings
+Copy over the sample `.npmrc`:
 ```
-npm run set:env
+cp .npmrc.sample .npmrc
 ```
-
+Then modify `.npmrc` config file to set required environment settings such as `parm_hec_url` which specifies the URL of your Splunk HTTP Event Collector endpoint.
+```
+vim .npmrc
+```
 Then install node package dependencies:
 ```
 npm install
@@ -46,18 +47,17 @@ npm install
 ### Packaging
 To build the Serverles Application Module deployment package:
 ```
-npm run build
+npm run build:zip
 ```
 This will package the necessary Lambda function(s) and dependencies into one local deployment zip as specified in `package.json` build script. i.e. for Splunk CloudWatch Serverless Application it creates `splunk-cloudwatch-logs-processor.zip`
 
-Then upload all local artifacts needed by the SAM template to your previously created S3 bucket.
-You can do this either using **npm** or **AWS CLI**
+Then upload all local artifacts needed by the SAM template to your previously created S3 bucket. You can do this either using **npm** task or directly using **AWS CLI**:
 
-**Upload using NPM:**
+**Upload using npm:**
 
 Before you run this command please ensure that you have set correct values in your application .npmrc
 ```
-npm run cf-build
+npm run build:template
 ```
 
 **Upload using AWS CLI**
@@ -71,16 +71,16 @@ aws cloudformation package
 The command returns a copy of the SAM template, in this case `template.output.yaml`, replacing all references to local artifacts with the S3 location where the command uploaded the artifacts. In particular, `CodeUri` property of the Lambda resource points to the deployment zip `splunk-cloudwatch-logs-processor.zip` in the Amazon S3 bucket that you specified.
 
 ### Deploying
-**Deploy using NPM:**
+**Deploy using npm:**
 
 Before you run this command please ensure that you have set correct values in your application .npmrc
 ```
-npm run cf-deploy
+npm run build:deployment
 ```
 
 **Deploy using AWS CLI**
 
-Example below is specific to Splunk Splunk CloudWatch Serverless Application. `parameter-overrides` will defer by Splunk Serverless Application and you will need to adjust accordingly
+Example below is specific to Splunk Splunk CloudWatch Serverless Application. `parameter-overrides` will differ by Splunk Serverless Application and you will need to adjust accordingly. Alternatively, you can use npm task above which retrieves the configurations defined in .npmrc
 ```
 aws cloudformation deploy 
     --template $(pwd)/template.output.yaml 
@@ -100,12 +100,12 @@ For each serverless application, you can use the following npm tasks:
 | --- | --- |
 | `npm run set:env`| creates .npmrc file in your local project. set project variables here |
 | `npm run lint` | run eslint rules against .js files |
-| `npm run build` | create zip SAM deployment package with required .js files |
-| `npm run cf-build` | uploads SAM deployment package with required template files to AWS S3 Bucket|
-| `npm run cf-deploy` | creates CloudFormation Stack and deploys SAM package from AWS S3 Bucket|
+| `npm run build:zip` | create zip SAM deployment package with required .js files |
+| `npm run build:template` | uploads SAM deployment package with required template files to AWS S3 Bucket|
+| `npm run build:deployment` | creates CloudFormation Stack and deploys SAM package from AWS S3 Bucket|
 | `npm run clean` | remove zip deployment package |
 | `npm run test` (or `npm test`) | run simple integration test with live Splunk Enterprise instance. More details in section below. |
-| `npm run just-do-it` | runs `build` then `cf-build` and then `cf-deploy` |
+| `npm run build` | runs entire build flow: `build:zip` then `build:template` and then `build:deployment` |
 
 ### Setup test environment
 
@@ -156,6 +156,8 @@ Successfully processed 2 log event(s).
 
 ## Authors
 * **Roy Arsan** - [rarsan](https://github.com/rarsan)
+* **Tarik Makota** - [tmakota](https://github.com/tmakota)
+
 
 See also the list of [contributors](https://github.com/your/project/contributors) who participated in this project.
 
