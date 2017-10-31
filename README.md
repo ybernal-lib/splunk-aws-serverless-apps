@@ -35,10 +35,8 @@ Copy over the sample `.npmrc`:
 ```
 cp .npmrc.sample .npmrc
 ```
-Then modify `.npmrc` config file to set required environment settings such as `parm_hec_url` which specifies the URL of your Splunk HTTP Event Collector endpoint.
-```
-vim .npmrc
-```
+Then modify `.npmrc` file to set required configuration settings to match your environment, such as `parm_hec_url` which specifies the URL of your Splunk HTTP Event Collector endpoint.
+
 Then install node package dependencies:
 ```
 npm install
