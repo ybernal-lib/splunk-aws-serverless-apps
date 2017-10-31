@@ -6,7 +6,10 @@ const response = require('./lib/cfnresponse');
 const s3 = new AWS.S3();
 
 exports.handler = (event, context, callback) => {
-    const respond = (e) => response.send(event, context, e ? response.FAILED : response.SUCCESS, e ? e : {});
+    const respond = (e) => {
+        if (e) { console.log(e); }
+        response.send(event, context, e ? response.FAILED : response.SUCCESS, e ? e : {});
+    };
     process.on('uncaughtException', e => failed(e));
     const params = event.ResourceProperties;
     console.log('Parameters: ', JSON.stringify(params));
