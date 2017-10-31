@@ -1,4 +1,4 @@
-sam_alb_s3_bucket_name = fake-bucket-name
+sam_s3_bucket_name = fake-bucket-name
 parm_s3_logs_bucket=fake-s3-bucket-name
 parm_s3_event_type=fake-s3-event type
 parm_s3_prefix= 

@@ -11,7 +11,7 @@
     "postinstall": "node -e \"var s='../lib',d='lib',fs=require('fs');fs.exists(d,function(e){e||fs.symlinkSync(s,d,'dir')});\"",
     "pretest": "npm run lint",
     "set:env": "node ../setup.js",
-    "cf-build": "aws cloudformation package --template template.yaml --s3-bucket $npm_config_sam_dynamodb_s3_bucket --output-template-file template.output.yaml",
+    "cf-build": "aws cloudformation package --template template.yaml --s3-bucket $npm_config_sam_s3_bucket_name --output-template-file template.output.yaml",
     "cf-deploy":"aws cloudformation deploy --template-file $(pwd)/template.output.yaml --parameter-overrides DynamoTableName=\"$npm_config_parm_table_name\" DynamoTableStreamARN=\"$npm_config_parm_table_stream_arn\" DynamoDBStartingPosition=\"$npm_config_parm_start_position\" SplunkHttpEventCollectorURL=\"$npm_config_parm_hec_url\" SplunkHttpEventCollectorToken=\"$npm_config_parm_hec_token\" CreationDate=\"$(date +'%F %T')\" --stack-name $npm_config_parm_stack_name --capabilities \"CAPABILITY_IAM\"",
     "just-do-it": "npm run build && npm run cf-build && npm run cf-deploy"
   },

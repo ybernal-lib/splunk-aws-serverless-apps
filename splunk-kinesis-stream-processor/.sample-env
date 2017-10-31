@@ -1,4 +1,4 @@
-sam_kinesis_s3_bucket = fake-s3-bucket-name
+sam_s3_bucket_name = fake-s3-bucket-name
 parm_stream_name = fake-stream-name
 parm_stream_start_position = LATEST
 parm_hec_url = https://192.168.0.0:8088/services/collector
