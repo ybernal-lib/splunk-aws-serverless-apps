@@ -157,7 +157,7 @@ Successfully processed 2 log event(s).
 * **Tarik Makota** - [tmakota](https://github.com/tmakota)
 
 
-See also the list of [contributors](https://github.com/your/project/contributors) who participated in this project.
+See also the list of [contributors](https://github.com/splunk/splunk-aws-lambda-blueprints/contributors) who participated in this project.
 
 ## License
 Splunk AWS Lambda blueprints & application templates are released under the MIT license. Details can be found in the [LICENSE](LICENSE.txt) file.
