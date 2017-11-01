@@ -35,8 +35,8 @@ exports.handler = (event, context, callback) => {
     console.log('Received event:', JSON.stringify(event, null, 2));
 
     // Set common error handler for logger.send() and logger.flush()
-    logger.error = (err, context) => {
-        console.log("error", err, "context", context);
+    logger.error = (err, payload) => {
+        console.log('error', err, 'context', payload);
         callback(err);
     };
 
@@ -75,9 +75,8 @@ exports.handler = (event, context, callback) => {
                 if (error) {
                     // If failed, error will be handled by common logger.error() overriden above
                     // Alternatively, error handling can be done here
-                    return;
                 } else {
-                    // If succeeded, body will be { text: 'Success', code: 0 } 
+                    // If succeeded, body will be { text: 'Success', code: 0 }
                     console.log('Response from Splunk:', body);
                     console.log(`Successfully processed ${count} log event(s).`);
                     callback(null, count); // Return number of log events
