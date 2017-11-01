@@ -35,17 +35,17 @@ exports.handler = (event, context, callback) => {
     console.log('Received event:', JSON.stringify(event, null, 2));
 
     // Set common error handler for logger.send() and logger.flush()
-    logger.error = (err, payload) => {
-        console.log('error', err, 'context', payload);
-        callback(err);
+    logger.error = (error, payload) => {
+        console.log('error', error, 'context', payload);
+        callback(error);
     };
 
     // CloudWatch Logs data is base64 encoded so decode here
     const payload = new Buffer(event.awslogs.data, 'base64');
     // CloudWatch Logs are gzip compressed so expand here
-    zlib.gunzip(payload, (err, result) => {
-        if (err) {
-            callback(err);
+    zlib.gunzip(payload, (error, result) => {
+        if (error) {
+            callback(error);
         } else {
             const parsed = JSON.parse(result.toString('ascii'));
             console.log('Decoded payload:', JSON.stringify(parsed, null, 2));
@@ -71,10 +71,10 @@ exports.handler = (event, context, callback) => {
                 });
             }
             // Send all the events in a single batch to Splunk
-            logger.flush((error, response, body) => {
-                if (error) {
-                    // If failed, error will be handled by common logger.error() overriden above
-                    // Alternatively, error handling can be done here
+            logger.flush((err, resp, body) => {
+                // Request failure or valid response from Splunk with HEC error code
+                if (err || (body && body.code !== 0)) {
+                    // If failed, error will be handled by pre-defined common logger.error() above
                 } else {
                     // If succeeded, body will be { text: 'Success', code: 0 }
                     console.log('Response from Splunk:', body);
