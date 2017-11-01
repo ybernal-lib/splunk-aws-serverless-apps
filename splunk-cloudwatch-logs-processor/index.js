@@ -23,7 +23,6 @@ const loggerConfig = {
     maxBatchCount: 0, // Manually flush events
 };
 
-// const SplunkLogger = require('./lib/mysplunklogger');
 const SplunkLogger = require('splunk-logging').Logger;
 const zlib = require('zlib');
 
