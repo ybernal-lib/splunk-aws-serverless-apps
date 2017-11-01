@@ -21,17 +21,24 @@ const loggerConfig = {
     url: process.env.SPLUNK_HEC_URL,
     token: process.env.SPLUNK_HEC_TOKEN,
     maxBatchCount: 0, // Manually flush events
+    maxRetries: 3,    // Retry 3 times
 };
 
 const SplunkLogger = require('splunk-logging').Logger;
 const zlib = require('zlib');
 
 const logger = new SplunkLogger(loggerConfig);
-// override SplunkLogger default formatter
+// Override SplunkLogger default formatter
 logger.eventFormatter = message => message;
 
 exports.handler = (event, context, callback) => {
     console.log('Received event:', JSON.stringify(event, null, 2));
+
+    // Set common error handler for logger.send() and logger.flush()
+    logger.error = (err, context) => {
+        console.log("error", err, "context", context);
+        callback(err);
+    };
 
     // CloudWatch Logs data is base64 encoded so decode here
     const payload = new Buffer(event.awslogs.data, 'base64');
@@ -66,8 +73,11 @@ exports.handler = (event, context, callback) => {
             // Send all the events in a single batch to Splunk
             logger.flush((error, response, body) => {
                 if (error) {
-                    callback(error);
+                    // If failed, error will be handled by common logger.error() overriden above
+                    // Alternatively, error handling can be done here
+                    return;
                 } else {
+                    // If succeeded, body will be { text: 'Success', code: 0 } 
                     console.log('Response from Splunk:', body);
                     console.log(`Successfully processed ${count} log event(s).`);
                     callback(null, count); // Return number of log events
