@@ -1,6 +1,6 @@
-ssam_s3_bucket_name=tarik-sam-test
-parm_iot_rule=FakeTopic
-parm_iot_sql_version=2016-03-23
+sam_s3_bucket_name = fake-s3-bucket-name
+parm_iot_rule = "fakeTopic/#"
+parm_iot_sql_version = 2016-03-23
 parm_hec_url = https://192.168.0.1:8088/services/collector
 parm_hec_token = FAKE-FAKE-FAKE
-parm_stack_name=splunk-iot-stack
+parm_stack_name = splunk-iot-stack

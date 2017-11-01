@@ -9,13 +9,14 @@ Description: >
     Authors: Roy Arsan <roy@splunk.com>, Bill Bartlett <bbartlett@splunk.com>, Tarik Makota <tmak@amazon.com>
 
 Parameters:
-    IoTRule: 
+    IoTTopicFilter:
       Type: "String"
-      Description: "Name of a AWS IoT rule. In AWS IoT Console under 'Act' you'll have see your existing Rules"
+      Description: "IoT topic filter. To learn more about topics and topic filters, see http://docs.aws.amazon.com/iot/latest/developerguide/topics.html"
 
-    AwsIotSqlVersion:
+    IoTSqlVersion:
       Type: "String"
-      Description: "IoT SQL Version (if not sure leave as deafult)"
+      Description: "Version of the SQL rule engine. Defaults to \"2016-03-23\""
+      AllowedValues: ["2016-03-23", "2015-10-08"]
       Default: "2016-03-23"
 
     SplunkHttpEventCollectorURL:
@@ -50,5 +51,5 @@ Resources:
         IoT: 
           Type: IoTRule
           Properties: 
-            AwsIotSqlVersion: !Ref AwsIotSqlVersion
-            Sql: !Join [ "", [ "SELECT * FROM '", !Ref IoTRule, "/+'" ] ] 
+            AwsIotSqlVersion: !Ref IoTSqlVersion
+            Sql: !Join [ "", [ "SELECT * FROM '", !Ref IoTTopicFilter, "'"] ]
