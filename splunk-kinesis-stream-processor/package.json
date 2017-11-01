@@ -5,12 +5,17 @@
   "main": "index.js",
   "scripts": {
     "lint": "eslint -c ../.eslintrc --ignore-path ../.eslintignore .",
-    "test": "node integration-test.js",
-    "build": "zip -r splunk-kinesis-stream-processor.zip index.js lambda.json lib/",
+    "test": "SPLUNK_HEC_URL=$npm_config_parm_hec_url SPLUNK_HEC_TOKEN=$npm_config_parm_hec_token node integration-test.js",
     "clean": "rm -f splunk-kinesis-stream-processor.zip",
-
     "postinstall": "node -e \"var s='../lib',d='lib',fs=require('fs');fs.exists(d,function(e){e||fs.symlinkSync(s,d,'dir')});\"",
-    "pretest": "npm run lint"
+    "x-pretest": "npm run lint",
+
+    "build:zip": "zip -r splunk-kinesis-stream-processor.zip index.js lambda.json lib/",
+    "build:template": "aws cloudformation package --template template.yaml --s3-bucket $npm_config_sam_s3_bucket_name --output-template-file template.output.yaml",
+    "build:deployment":"aws cloudformation deploy --template-file $(pwd)/template.output.yaml --parameter-overrides KinesisStreamName=\"$npm_config_parm_stream_name\" KinesisStreamStartingPosition=\"$npm_config_parm_stream_start_position\" SplunkHttpEventCollectorURL=\"$npm_config_parm_hec_url\" SplunkHttpEventCollectorToken=\"$npm_config_parm_hec_token\"  --stack-name $npm_config_parm_stack_name --capabilities \"CAPABILITY_IAM\"",
+    "build": "npm run build:zip && npm run build:template && npm run build:deployment",
+
+    "kinesis:put":"aws kinesis put-record --stream-name \"$npm_config_parm_stream_name\" --data \"{'message': 'Hello Test from npm'}\" --partition-key 123"
   },
   "keywords": [
     "splunk",
@@ -20,10 +25,13 @@
   ],
   "authors": [
     "Roy Arsan <rarsan@splunk.com> (https://www.splunk.com)",
-    "Glenn Block <gblock@splunk.com> (https://www.splunk.com)"
+    "Glenn Block <gblock@splunk.com> (https://www.splunk.com)",
+    "Bill Bartlett <bbartlett@splunk.com> (https://www.splunk.com)",
+    "Tarik Makota <tmak@amazon.com> (https://aws.amazon.com)"
   ],
   "license": "CC0-1.0",
-  "dependencies": {},
+  "dependencies": {
+  },
   "devDependencies": {
     "babel-eslint": "^7.1.0",
     "eslint": "^3.12.0",

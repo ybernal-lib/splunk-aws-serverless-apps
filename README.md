@@ -27,33 +27,66 @@ aws s3 mb s3://<my-bucket-name> --region us-east-1
 ```
 
 ### Installing
-
-First, cd into any of the serverless applications:
+First cd into any of the serverless applications:
 ```
 cd splunk-cloudwatch-logs-processor
 ```
+Copy over the sample `.npmrc`:
+```
+cp .npmrc.sample .npmrc
+```
+Then modify `.npmrc` file to set required configuration settings to match your environment, such as `parm_hec_url` which specifies the URL of your Splunk HTTP Event Collector endpoint.
+
 Then install node package dependencies:
 ```
 npm install
 ```
 
 ### Packaging
-Then build the function deployment package:
+To build the Serverles Application Module deployment package:
 ```
-npm run build
+npm run build:zip
 ```
-This will package the necessary Lambda function(s) and dependencies into one local deployment zip `splunk-cloudwatch-logs-processor.zip`
+This will package the necessary Lambda function(s) and dependencies into one local deployment zip as specified in `package.json` build script. i.e. for Splunk CloudWatch Serverless Application it creates `splunk-cloudwatch-logs-processor.zip`
 
-Then upload all local artifacts needed by the SAM template to your previously created S3 bucket by running:
+Then upload all local artifacts needed by the SAM template to your previously created S3 bucket. You can do this either using **npm** task or directly using **AWS CLI**:
+
+**Upload using npm:**
+
+Before you run this command please ensure that you have set correct values in your application .npmrc
 ```
-aws cloudformation package --template template.yaml --s3-bucket <my-bucket-name> --output-template-file template.output.yaml
+npm run build:template
 ```
+
+**Upload using AWS CLI**
+```
+aws cloudformation package 
+    --template template.yaml 
+    --s3-bucket <my-bucket-name> 
+    --output-template-file template.output.yaml
+```
+
 The command returns a copy of the SAM template, in this case `template.output.yaml`, replacing all references to local artifacts with the S3 location where the command uploaded the artifacts. In particular, `CodeUri` property of the Lambda resource points to the deployment zip `splunk-cloudwatch-logs-processor.zip` in the Amazon S3 bucket that you specified.
 
 ### Deploying
+**Deploy using npm:**
 
+Before you run this command please ensure that you have set correct values in your application .npmrc
 ```
-aws cloudformation deploy --template $(pwd)/template.output.yaml --parameter-overrides SplunkHttpEventCollectorURL='https://<my-splunk-ip-or-fqdn>:8088/services/collector' SplunkHttpEventCollectorToken=<my-splunk-hec-token> CloudWatchLogsGroupName=<my-cwl-group-name> --capabilities "CAPABILITY_IAM" --stack-name my-cloudwatch-logs-forwarder-stack
+npm run build:deployment
+```
+
+**Deploy using AWS CLI**
+
+Example below is specific to Splunk Splunk CloudWatch Serverless Application. `parameter-overrides` will differ by Splunk Serverless Application and you will need to adjust accordingly. Alternatively, you can use npm task above which retrieves the configurations defined in .npmrc
+```
+aws cloudformation deploy 
+    --template $(pwd)/template.output.yaml 
+    --parameter-overrides 
+        SplunkHttpEventCollectorURL='https://<my-splunk-ip-or-fqdn>:8088/services/collector' 
+        SplunkHttpEventCollectorToken=<my-splunk-hec-token> 
+        CloudWatchLogsGroupName=<my-cwl-group-name> 
+    --capabilities "CAPABILITY_IAM" --stack-name my-cloudwatch-logs-forwarder-stack
 ```
 
 ## Development & Test
@@ -63,13 +96,21 @@ For each serverless application, you can use the following npm tasks:
 
 | command | description |
 | --- | --- |
+| `npm run set:env`| creates .npmrc file in your local project. set project variables here |
 | `npm run lint` | run eslint rules against .js files |
-| `npm run build` | create zip deployment package with required .js files |
+| `npm run build:zip` | create zip SAM deployment package with required .js files |
+| `npm run build:template` | uploads SAM deployment package with required template files to AWS S3 Bucket|
+| `npm run build:deployment` | creates CloudFormation Stack and deploys SAM package from AWS S3 Bucket|
 | `npm run clean` | remove zip deployment package |
 | `npm run test` (or `npm test`) | run simple integration test with live Splunk Enterprise instance. More details in section below. |
+| `npm run build` | runs entire build flow: `build:zip` then `build:template` and then `build:deployment` |
 
 ### Setup test environment
 
+>>>> This section requires updates <<<<
+i.e. instead of setEnv can use
+"test": "SPLUNK_HEC_URL=$npm_config_kinesis_hec_url SPLUNK_HEC_TOKEN=$npm_config_kinesis_hec_token node integration-test.js",
+    
 For test-driven development, you can easily run a simple integration test as you develop the Lambda function.
 First, copy over the provided setEnv bash script in root folder:
 ```
@@ -113,6 +154,8 @@ Successfully processed 2 log event(s).
 
 ## Authors
 * **Roy Arsan** - [rarsan](https://github.com/rarsan)
+* **Tarik Makota** - [tmakota](https://github.com/tmakota)
+
 
 See also the list of [contributors](https://github.com/your/project/contributors) who participated in this project.
 
