@@ -6,11 +6,10 @@
   "scripts": {
     "lint": "eslint -c ../.eslintrc --ignore-path ../.eslintignore .",
     "test": "SPLUNK_HEC_URL=$npm_config_parm_hec_url SPLUNK_HEC_TOKEN=$npm_config_parm_hec_token node integration-test.js",
-    "clean": "rm -f splunk-kinesis-stream-processor.zip",
     "postinstall": "node -e \"var s='../lib',d='lib',fs=require('fs');fs.exists(d,function(e){e||fs.symlinkSync(s,d,'dir')});\"",
-    "x-pretest": "npm run lint",
+    "pretest": "npm run lint",
 
-    "build:zip": "zip -r splunk-kinesis-stream-processor.zip index.js lambda.json lib/",
+    "build:zip": "zip -i \\*.js \\*.json -r splunk-kinesis-stream-processor.zip index.js lib/ $(npm list --prod --parseable | sed -nE 's/.*\\/(node_modules\\/.*)/\\1/p' | awk '{printf \"%s \", $0;}')",
     "build:template": "aws cloudformation package --template template.yaml --s3-bucket $npm_config_sam_s3_bucket_name --output-template-file template.output.yaml",
     "build:deployment":"aws cloudformation deploy --template-file $(pwd)/template.output.yaml --parameter-overrides KinesisStreamName=\"$npm_config_parm_stream_name\" KinesisStreamStartingPosition=\"$npm_config_parm_stream_start_position\" SplunkHttpEventCollectorURL=\"$npm_config_parm_hec_url\" SplunkHttpEventCollectorToken=\"$npm_config_parm_hec_token\"  --stack-name $npm_config_parm_stack_name --capabilities \"CAPABILITY_IAM\"",
     "build": "npm run build:zip && npm run build:template && npm run build:deployment",
