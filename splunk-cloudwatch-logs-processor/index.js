@@ -28,17 +28,12 @@ const SplunkLogger = require('splunk-logging').Logger;
 const zlib = require('zlib');
 
 const logger = new SplunkLogger(loggerConfig);
-// Override SplunkLogger default formatter
-logger.eventFormatter = message => message;
 
 exports.handler = (event, context, callback) => {
     console.log('Received event:', JSON.stringify(event, null, 2));
 
-    // Set common error handler for logger.send() and logger.flush()
-    logger.error = (error, payload) => {
-        console.log('error', error, 'context', payload);
-        callback(error);
-    };
+    // First, configure logger to automatically add Lambda metadata and to hook into Lambda callback
+    configureLogger(context, callback); // eslint-disable-line no-use-before-define
 
     // CloudWatch Logs data is base64 encoded so decode here
     const payload = new Buffer(event.awslogs.data, 'base64');
@@ -63,7 +58,7 @@ exports.handler = (event, context, callback) => {
                             host: 'serverless',
                             source: `lambda:${context.functionName}`,
                             sourcetype: 'httpevent',
-                            index: 'sandbox',
+                            //index: 'main',
                         },
                     });
 
@@ -74,7 +69,7 @@ exports.handler = (event, context, callback) => {
             logger.flush((err, resp, body) => {
                 // Request failure or valid response from Splunk with HEC error code
                 if (err || (body && body.code !== 0)) {
-                    // If failed, error will be handled by pre-defined common logger.error() above
+                    // If failed, error will be handled by pre-configured logger.error() below
                 } else {
                     // If succeeded, body will be { text: 'Success', code: 0 }
                     console.log('Response from Splunk:', body);
@@ -84,4 +79,21 @@ exports.handler = (event, context, callback) => {
             });
         }
     });
+};
+
+const configureLogger = (context, callback) => {
+    // Override SplunkLogger default formatter
+    logger.eventFormatter = (event) => {
+        // Enrich event only if it is an object
+        if (typeof event === 'object' && !Object.prototype.hasOwnProperty.call(event, 'awsRequestId')) {
+            event.awsRequestId = context.awsRequestId; // eslint-disable-line no-param-reassign
+        }
+        return event;
+    };
+
+    // Set common error handler for logger.send() and logger.flush()
+    logger.error = (error, payload) => {
+        console.log('error', error, 'context', payload);
+        callback(error);
+    };
 };
