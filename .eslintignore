@@ -1,2 +1,4 @@
 integration-test.js
 cfnresponse.js
+db-stream-lambda.js
+createbucket.js

@@ -20,9 +20,11 @@
 const loggerConfig = {
     url: process.env.SPLUNK_HEC_URL,
     token: process.env.SPLUNK_HEC_TOKEN,
+    maxBatchCount: 0, // Manually flush events
+    maxRetries: 3,    // Retry 3 times
 };
 
-const SplunkLogger = require('./lib/mysplunklogger');
+const SplunkLogger = require('splunk-logging').Logger;
 const zlib = require('zlib');
 
 const logger = new SplunkLogger(loggerConfig);
@@ -30,49 +32,69 @@ const logger = new SplunkLogger(loggerConfig);
 exports.handler = (event, context, callback) => {
     console.log('Received event:', JSON.stringify(event, null, 2));
 
+    // First, configure logger to automatically add Lambda metadata and to hook into Lambda callback
+    configureLogger(context, callback); // eslint-disable-line no-use-before-define
+
     // CloudWatch Logs data is base64 encoded so decode here
     const payload = new Buffer(event.awslogs.data, 'base64');
     // CloudWatch Logs are gzip compressed so expand here
-    zlib.gunzip(payload, (err, result) => {
-        if (err) {
-            callback(err);
+    zlib.gunzip(payload, (error, result) => {
+        if (error) {
+            callback(error);
         } else {
             const parsed = JSON.parse(result.toString('ascii'));
             console.log('Decoded payload:', JSON.stringify(parsed, null, 2));
             let count = 0;
             if (parsed.logEvents) {
                 parsed.logEvents.forEach((item) => {
-                    /* Log event to Splunk with explicit event timestamp.
-                    - Use optional 'context' argument to send Lambda metadata e.g. awsRequestId, functionName.
+                    /* Send item message to Splunk with optional metadata properties such as time, index, source, sourcetype, and host.
                     - Change "item.timestamp" below if time is specified in another field in the event.
-                    - Change to "logger.log(item.message, context)" if no time field is present in event. */
-                    logger.logWithTime(item.timestamp, item.message, context);
-
-                    /* Alternatively, UNCOMMENT logger call below if you want to override Splunk input settings */
-                    /* Log event to Splunk with any combination of explicit timestamp, index, source, sourcetype, and host.
-                    - Complete list of input settings available at http://docs.splunk.com/Documentation/Splunk/latest/RESTREF/RESTinput#services.2Fcollector */
-                    // logger.logEvent({
-                    //     time: new Date(item.timestamp).getTime() / 1000,
-                    //     host: 'serverless',
-                    //     source: `lambda:${context.functionName}`,
-                    //     sourcetype: 'httpevent',
-                    //     index: 'main',
-                    //     event: item.message,
-                    // });
+                    - Set or remove metadata properties as needed. For descripion of each property, refer to:
+                    http://docs.splunk.com/Documentation/Splunk/latest/RESTREF/RESTinput#services.2Fcollector */
+                    logger.send({
+                        message: item.message,
+                        metadata: {
+                            time: item.timestamp ? new Date(item.timestamp).getTime() / 1000 : Date.now(),
+                            host: 'serverless',
+                            source: `lambda:${context.functionName}`,
+                            sourcetype: 'httpevent',
+                            //index: 'main',
+                        },
+                    });
 
                     count += 1;
                 });
             }
             // Send all the events in a single batch to Splunk
-            logger.flushAsync((error, response) => {
-                if (error) {
-                    callback(error);
+            logger.flush((err, resp, body) => {
+                // Request failure or valid response from Splunk with HEC error code
+                if (err || (body && body.code !== 0)) {
+                    // If failed, error will be handled by pre-configured logger.error() below
                 } else {
-                    console.log(`Response from Splunk:\n${response}`);
+                    // If succeeded, body will be { text: 'Success', code: 0 }
+                    console.log('Response from Splunk:', body);
                     console.log(`Successfully processed ${count} log event(s).`);
                     callback(null, count); // Return number of log events
                 }
             });
         }
     });
+};
+
+const configureLogger = (context, callback) => {
+    // Override SplunkLogger default formatter
+    logger.eventFormatter = (event) => {
+        // Enrich event only if it is an object
+        if (typeof event === 'object' && !Object.prototype.hasOwnProperty.call(event, 'awsRequestId')) {
+            // Add awsRequestId from Lambda context for request tracing
+            event.awsRequestId = context.awsRequestId; // eslint-disable-line no-param-reassign
+        }
+        return event;
+    };
+
+    // Set common error handler for logger.send() and logger.flush()
+    logger.error = (error, payload) => {
+        console.log('error', error, 'context', payload);
+        callback(error);
+    };
 };
