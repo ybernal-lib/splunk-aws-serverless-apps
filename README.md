@@ -1,5 +1,5 @@
-# Splunk AWS Lambda Blueprints
-Splunk AWS Serverless applications and Lambda blueprints for AWS Lambda console, including associated CloudFormation templates (using [SAM](https://github.com/awslabs/serverless-application-model)) for automated packaging & deployment.
+# Splunk AWS Serverless Apps
+Splunk AWS Serverless applications and [Lambda blueprints](https://www.splunk.com/blog/2016/11/29/announcing-new-aws-lambda-blueprints-for-splunk.html), including associated CloudFormation templates (using [SAM](https://github.com/awslabs/serverless-application-model)) for automated packaging & deployment.
 
 ## Table of Contents
 * **[Getting Started](#getting-started)**
@@ -160,4 +160,4 @@ Successfully processed 2 log event(s).
 See also the list of [contributors](https://github.com/splunk/splunk-aws-lambda-blueprints/contributors) who participated in this project.
 
 ## License
-Splunk AWS Lambda blueprints & application templates are released under the MIT license. Details can be found in the [LICENSE](LICENSE.txt) file.
+Splunk AWS Serverless Apps are released under the MIT license. Details can be found in the [LICENSE](LICENSE.txt) file.
