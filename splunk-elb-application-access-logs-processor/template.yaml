@@ -116,7 +116,7 @@ Resources:
     Properties:
       Description: S3 Object Custom Resource
       Handler: createbucket.handler
-      CodeUri: ./splunk-elb-application-access-logs-processor.zip
+      CodeUri: ./configure-bucket-custom-resource.zip
       Role: !GetAtt LambdaExecutionRole.Arn
       Timeout: 30
       Runtime: nodejs6.10
