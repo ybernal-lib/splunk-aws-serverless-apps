@@ -111,6 +111,7 @@ const configureLogger = (context, callback) => {
     logger.eventFormatter = (event) => {
         // Enrich event only if it is an object
         if (typeof event === 'object' && !Object.prototype.hasOwnProperty.call(event, 'awsRequestId')) {
+            // Add awsRequestId from Lambda context for request tracing
             event.awsRequestId = context.awsRequestId; // eslint-disable-line no-param-reassign
         }
         return event;
