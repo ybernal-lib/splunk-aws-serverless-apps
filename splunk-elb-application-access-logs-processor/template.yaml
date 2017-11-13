@@ -85,9 +85,9 @@ Resources:
           Statement:
             - Effect: Allow
               Action:
-                - 's3:PutObject'
-                - 'S3:DeleteObject'
-              Resource: !Sub "arn:aws:s3:::${S3ALBLogsBucketName}"
+                - 's3:Get*'
+                - 's3:List*'
+              Resource: !Sub "arn:aws:s3:::${S3ALBLogsBucketName}/*"
 
   NotificationBucketPolicy:
     Type: AWS::S3::BucketPolicy
