@@ -1,5 +1,5 @@
 # Splunk AWS Lambda Blueprints
-Splunk AWS Lambda blueprints for AWS Lambda console, and associated CloudFormation templates (using [SAM](https://github.com/awslabs/serverless-application-model)) for automated packaging & deployment.
+Splunk AWS Serverless applications and Lambda blueprints for AWS Lambda console, including associated CloudFormation templates (using [SAM](https://github.com/awslabs/serverless-application-model)) for automated packaging & deployment.
 
 ## Table of Contents
 * **[Getting Started](#getting-started)**
