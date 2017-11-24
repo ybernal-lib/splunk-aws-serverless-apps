@@ -44,46 +44,16 @@ Outputs:
       Value: !GetAtt SplunkDynamoDBProcessor.Arn
 
 Resources:
-    SplunkDynamoDBProcessorFunctionIAMRole:
-      Type: "AWS::IAM::Role"
-      Properties:
-          Path: "/"
-          ManagedPolicyArns:
-            - "arn:aws:iam::aws:policy/service-role/AWSLambdaDynamoDBExecutionRole"
-          Policies: 
-          - 
-            PolicyName:  "SplunkDynamoStreamPolicy"
-            PolicyDocument: 
-              Version: "2012-10-17"
-              Statement: 
-              - 
-                Effect: "Allow"
-                Action: 
-                - dynamodb:DescribeStream
-                - dynamodb:GetRecords
-                - dynamodb:GetShardIterator
-                - dynamodb:ListStreams 
-                Resource: 
-                  - !Join [ "", [ "arn:", !Ref "AWS::Partition", ":dynamodb:", !Ref "AWS::Region", ":", !Ref "AWS::AccountId", ":table/", !Ref DynamoDBTableName, "/stream/*" ] ]
-          AssumeRolePolicyDocument:
-            Version: "2012-10-17"
-            Statement:
-              -
-                Sid: "AllowLambdaServiceToAssumeRole"
-                Effect: "Allow"
-                Action: 
-                  - "sts:AssumeRole"
-                Principal:
-                  Service: 
-                    - "lambda.amazonaws.com"
-
     SplunkDynamoDBProcessor:
       Type: 'AWS::Serverless::Function'
       Properties:
         Handler: index.handler
         Runtime: nodejs6.10
         CodeUri: ./splunk-dynamodb-stream-processor.zip
-        Role: !GetAtt SplunkDynamoDBProcessorFunctionIAMRole.Arn
+        Policies:
+          - DynamoDBStreamReadPolicy:
+              TableName: !Ref DynamoDBTableName
+              StreamName: !Ref DynamoDBStreamARN
         Description: Stream events from DynamoDB Table to Splunk HTTP event collector
         MemorySize: 512
         Timeout: 10

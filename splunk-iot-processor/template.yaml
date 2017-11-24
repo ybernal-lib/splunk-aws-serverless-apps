@@ -39,7 +39,6 @@ Resources:
       Handler: index.handler
       Runtime: nodejs6.10
       CodeUri: ./splunk-iot-processor.zip
-      Policies: AWSLambdaBasicExecutionRole
       Description: Capture events from IOT topic and send to Splunk HTTP event collector
       MemorySize: 512
       Timeout: 10

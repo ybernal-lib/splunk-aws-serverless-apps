@@ -24,31 +24,12 @@ Outputs:
       Value: !GetAtt SplunkLoggingFunction.Arn
 
 Resources:
-    SplunkLoggingFunctionIAMRole:
-        Type: "AWS::IAM::Role"
-        Properties:
-            Path: "/"
-            ManagedPolicyArns:
-                - "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
-            AssumeRolePolicyDocument:
-              Version: "2012-10-17"
-              Statement:
-                -
-                  Sid: "AllowLambdaServiceToAssumeRole"
-                  Effect: "Allow"
-                  Action: 
-                    - "sts:AssumeRole"
-                  Principal:
-                    Service: 
-                      - "lambda.amazonaws.com"
-
     SplunkLoggingFunction:
       Type: 'AWS::Serverless::Function'
       Properties:
         Handler: index.handler
         Runtime: nodejs6.10
         CodeUri: ./splunk-logging.zip
-        Role: !GetAtt SplunkLoggingFunctionIAMRole.Arn
         Description: Demonstrates logging from AWS Lambda code to Splunk HTTP event collector
         MemorySize: 512
         Timeout: 30

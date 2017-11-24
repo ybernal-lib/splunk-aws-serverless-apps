@@ -1,7 +1,7 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: 'AWS::Serverless-2016-10-31'
 Description: >
-    Serverless application to Stream Application ELB access logs from S3 to Splunk's HTTP event collector (HEC).
+    Serverless application to Stream Application ALB access logs from S3 to Splunk's HTTP event collector (HEC).
 
     This SAM template creates the Lambda function with its IAM execution role, a subscription to S3 Bucket stream
     along with a Lambda permission to grant S3 Bucket Stream permission to invoke this function. 
@@ -19,7 +19,6 @@ Parameters:
     Type: "String"
     Description: "Select the events that you want to have trigger the Lambda function. For list of supported event types see: http://docs.aws.amazon.com/AmazonS3/latest/dev/NotificationHowTo.html#supported-notification-event-types"
     AllowedValues: ["s3:ObjectCreated:*","s3:ObjectCreated:Put", "s3:ObjectCreated:Post","s3:ObjectCreated:Copy" ,"s3:ObjectCreated:CompleteMultipartUpload"]
-    Default: "s3:ObjectCreated:Copy"
 
   S3Prefix:
     Type: "String"
@@ -66,29 +65,6 @@ Resources:
                   -
                     Name: suffix
                     Value: !Sub "${S3Suffix}"
-  LambdaExecutionRole:
-    Type: AWS::IAM::Role
-    Properties:
-      AssumeRolePolicyDocument:
-        Version: '2012-10-17'
-        Statement:
-        - Effect: Allow
-          Principal: {Service: [lambda.amazonaws.com]}
-          Action: ['sts:AssumeRole']
-      Path: /
-      ManagedPolicyArns:
-      - "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
-      Policies:
-      - PolicyName: S3Policy
-        PolicyDocument:
-          Version: '2012-10-17'
-          Statement:
-            - Effect: Allow
-              Action:
-                - 's3:Get*'
-                - 's3:List*'
-              Resource: !Sub "arn:aws:s3:::${S3ALBLogsBucketName}/*"
-
   NotificationBucketPolicy:
     Type: AWS::S3::BucketPolicy
     Properties:
@@ -99,8 +75,7 @@ Resources:
             Action:
             - 's3:PutBucketNotification'
             Resource: !Sub "arn:aws:s3:::${S3ALBLogsBucketName}"
-            Principal:
-              AWS: !GetAtt LambdaExecutionRole.Arn
+            Principal: "*"
 
   S3BucketPermission:
     Type: AWS::Lambda::Permission
@@ -117,8 +92,7 @@ Resources:
       Description: S3 Object Custom Resource
       Handler: createbucket.handler
       CodeUri: ./configure-bucket-custom-resource.zip
-      Role: !GetAtt LambdaExecutionRole.Arn
-      Timeout: 30
+      Timeout: 60
       Runtime: nodejs6.10
 
   SplunkALBProcessorFunction:
@@ -128,7 +102,9 @@ Resources:
       Handler: index.handler
       Runtime: nodejs6.10
       CodeUri: ./splunk-elb-application-access-logs-processor.zip
-      Role: !GetAtt LambdaExecutionRole.Arn
+      Policies:
+        - S3CrudPolicy:
+            BucketName: !Ref S3ALBLogsBucketName
       MemorySize: 512
       Timeout: 10
       Environment:
