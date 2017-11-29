@@ -3,7 +3,8 @@ Transform: 'AWS::Serverless-2016-10-31'
 Description: >
     Serverless application to stream access logs of Application ELB from S3 to Splunk HTTP Event Collector (HEC).
 
-    This SAM template creates the Lambda function and S3 Bucket. Direct your load balancers access logs to this newly created S3 Bucket.
+    This SAM template creates the Lambda function & associated policy + IAM role, and new S3 bucket
+    with enabled Events notification to this Lambda function. Direct your load balancers access logs to this newly created S3 Bucket.
     To enable access logs on application load balancers, refer to AWS docs:
     http://docs.aws.amazon.com/elasticloadbalancing/latest/application/load-balancer-access-logs.html#enable-access-logging
 
