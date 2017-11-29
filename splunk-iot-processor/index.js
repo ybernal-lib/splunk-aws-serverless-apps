@@ -1,8 +1,7 @@
 /**
  * Stream events from AWS IoT to Splunk
  *
- * This function streams AWS IoT events to Splunk using
- * Splunk's HTTP event collector API.
+ * This function streams AWS IoT events to Splunk using Splunk's HTTP event collector API.
  *
  * Define the following Environment Variables in the console below to configure
  * this function to stream events to your Splunk host:
@@ -18,6 +17,8 @@
  * For more details, including adding permissions to AWS IoT to invoke Lambda, refer to AWS Docs:
  * http://docs.aws.amazon.com/iot/latest/developerguide/iot-lambda-rule.html#iot-create-lambda-rule
  * http://docs.aws.amazon.com/iot/latest/developerguide/lambda-rule.html
+ *
+ * For details about Splunk logging library used below: https://github.com/splunk/splunk-javascript-logging
  */
 
 'use strict';
