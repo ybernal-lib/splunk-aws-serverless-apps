@@ -1,8 +1,7 @@
 /**
  * Stream events from AWS Kinesis to Splunk
  *
- * This function streams AWS Kinesis events to Splunk using
- * Splunk's HTTP event collector API.
+ * This function streams AWS Kinesis events to Splunk using Splunk's HTTP event collector API.
  *
  * Define the following Environment Variables in the console below to configure
  * this function to stream events to your Splunk host:
@@ -13,6 +12,8 @@
  * 2. SPLUNK_HEC_TOKEN: Token for your Splunk HTTP event collector.
  * To create a new token for this Lambda function, refer to Splunk Docs:
  * http://docs.splunk.com/Documentation/Splunk/latest/Data/UsetheHTTPEventCollector#Create_an_Event_Collector_token
+ *
+ * For details about Splunk logging library used below: https://github.com/splunk/splunk-javascript-logging
  */
 
 'use strict';
