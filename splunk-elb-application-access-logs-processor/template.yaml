@@ -3,23 +3,15 @@ Transform: 'AWS::Serverless-2016-10-31'
 Description: >
     Serverless application to Stream Application ALB access logs from S3 to Splunk's HTTP event collector (HEC).
 
-    This SAM template creates the Lambda function with its IAM execution role, a subscription to S3 Bucket stream
-    along with a Lambda permission to grant S3 Bucket Stream permission to invoke this function. 
-    S3 Bucket Stream must be in same region as the region where this stack is created.
-
+    This SAM template creates the Lambda function and S3 Bucket. Place your ALB logs into this newly created S3 Bucket.
     Last Modified: 12 Oct, 2017
     Authors: Roy Arsan <roy@splunk.com>, Bill Bartlett <bbartlett@splunk.com>, Tarik Makota <tmak@amazon.com>
 
 Parameters:
   S3ALBLogsBucketName:
     Type: "String"
-    Description: "Please select the S3 bucket that serves as the event source. The bucket must be in the same region as the function."
+    Description: "Please enter the S3 bucket that will serve as the event source. The bucket will be created for you."
   
-  S3EventType: 
-    Type: "String"
-    Description: "Select the events that you want to have trigger the Lambda function. For list of supported event types see: http://docs.aws.amazon.com/AmazonS3/latest/dev/NotificationHowTo.html#supported-notification-event-types"
-    AllowedValues: ["s3:ObjectCreated:*","s3:ObjectCreated:Put", "s3:ObjectCreated:Post","s3:ObjectCreated:Copy" ,"s3:ObjectCreated:CompleteMultipartUpload"]
-
   S3Prefix:
     Type: "String"
     Description: "Enter an optional prefix to limit the notifications to objects with keys that start with matching characters. e.g. uploadedImages/"
@@ -44,58 +36,7 @@ Outputs:
       Value: !Ref SplunkALBProcessorFunction
 
 Resources:
-  S3BucketEventConfiguration:
-    Type: Custom::S3BucketEventConfiguration
-    DependsOn:
-    - S3BucketPermission
-    - NotificationBucketPolicy
-    Properties:
-      ServiceToken: !GetAtt S3BucketEventConfigurationFunction.Arn
-      Bucket: !Ref S3ALBLogsBucketName
-      NotificationConfiguration:
-        LambdaFunctionConfigurations:
-        - Events: [!Sub "${S3EventType}"]
-          LambdaFunctionArn: !GetAtt SplunkALBProcessorFunction.Arn
-          Filter:
-              Key:
-                FilterRules:
-                  -
-                    Name: prefix
-                    Value: !Sub "${S3Prefix}"
-                  -
-                    Name: suffix
-                    Value: !Sub "${S3Suffix}"
-  NotificationBucketPolicy:
-    Type: AWS::S3::BucketPolicy
-    Properties:
-      Bucket: !Ref S3ALBLogsBucketName
-      PolicyDocument:
-        Statement:
-          - Effect: "Allow"
-            Action:
-            - 's3:PutBucketNotification'
-            Resource: !Sub "arn:aws:s3:::${S3ALBLogsBucketName}"
-            Principal: "*"
-
-  S3BucketPermission:
-    Type: AWS::Lambda::Permission
-    Properties:
-      Action: 'lambda:InvokeFunction'
-      FunctionName: !Ref SplunkALBProcessorFunction
-      Principal: s3.amazonaws.com
-      SourceAccount: !Ref "AWS::AccountId"
-      SourceArn: !Sub "arn:aws:s3:::${S3ALBLogsBucketName}"
-
-  S3BucketEventConfigurationFunction:
-    Type: 'AWS::Serverless::Function'
-    Properties:
-      Description: S3 Object Custom Resource
-      Handler: createbucket.handler
-      CodeUri: ./configure-bucket-custom-resource.zip
-      Timeout: 60
-      Runtime: nodejs6.10
-
-  SplunkALBProcessorFunction:
+   SplunkALBProcessorFunction:
     Type: 'AWS::Serverless::Function'
     Properties:
       Description: Stream ALB events from S3 to Splunk HTTP event collector
@@ -111,3 +52,22 @@ Resources:
         Variables:
           SPLUNK_HEC_URL: !Ref SplunkHttpEventCollectorURL
           SPLUNK_HEC_TOKEN: !Ref SplunkHttpEventCollectorToken
+      Events:
+        LogUpload:
+          Type: S3
+          Properties:
+            Bucket: !Ref Bucket
+            Events: s3:ObjectCreated:*
+            Filter:
+              S3Key:
+                Rules:
+                  -
+                    Name: prefix
+                    Value: !Sub "${S3Prefix}"
+                  -
+                    Name: suffix
+                    Value: !Sub "${S3Suffix}"
+   Bucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Ref S3ALBLogsBucketName
