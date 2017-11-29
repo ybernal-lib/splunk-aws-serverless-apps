@@ -1,26 +1,28 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: 'AWS::Serverless-2016-10-31'
 Description: >
-    Serverless application to Stream Application CLB access logs from S3 to Splunk's HTTP event collector (HEC).
+    Serverless application to stream access logs of Classic ELB from S3 to Splunk HTTP Event Collector (HEC).
 
-    This SAM template creates the Lambda function and S3 Bucket. Place your CLB logs into this newly created S3 Bucket.
+    This SAM template creates the Lambda function and S3 Bucket. Direct your load balancers access logs to this newly created S3 Bucket.
+    To enable access logs on application load balancers, refer to AWS docs:
+    http://docs.aws.amazon.com/elasticloadbalancing/latest/classic/enable-access-logs.html
 
-    Last Modified: 12 Oct, 2017
-    Authors: Roy Arsan <roy@splunk.com>, Bill Bartlett <bbartlett@splunk.com>, Tarik Makota <tmak@amazon.com>
+    Last Modified: 29 Nov, 2017
+    Authors: Roy Arsan <roy@splunk.com>, Tarik Makota <tmak@amazon.com>
 
 Parameters:
   S3CLBLogsBucketName:
     Type: "String"
-    Description: "Please specify name of S3 bucket that serves as the event source."
+    Description: "Name of S3 bucket that will store access logs. This bucket will be created for you. Name must be unique across all existing bucket names in Amazon S3."
   
   S3Prefix:
     Type: "String"
-    Description: "Enter an OPTIONAL prefix to limit the notifications to objects with keys that start with matching characters. e.g. uploadedImages/"
+    Description: "Optional prefix to limit the notifications to objects with keys that start with matching characters. e.g. uploadedImages/"
     Default: ""
 
   S3Suffix:
     Type: "String"
-    Description: "Enter an OPTIONAL suffix to limit the notifications to objects with keys that end with matching characters.. e.g. .jpge"
+    Description: "Optional suffix to limit the notifications to objects with keys that end with matching characters.. e.g. .jpg"
     Default: ""
 
   SplunkHttpEventCollectorURL:

@@ -8,7 +8,7 @@ Description: >
     to invoke this function. Log group must be in same region as the region where this stack is created.
 
     Last Modified: 06 Oct, 2017
-    Authors: Roy Arsan <roy@splunk.com>, Bill Bartlett <bbartlett@splunk.com>, Tarik Makota <tmak@amazon.com>
+    Authors: Roy Arsan <roy@splunk.com>, Tarik Makota <tmak@amazon.com>
 
 Parameters:
     CloudWatchLogsGroupName: 

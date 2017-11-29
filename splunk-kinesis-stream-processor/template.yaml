@@ -6,8 +6,8 @@ Description: >
     This SAM template creates the Lambda function with its IAM execution role and the event source mapping to Kinesis stream.
     Kinesis Stream must be in same region as the region where this stack is created.
 
-    Last Modified: 26 Oct, 2017
-    Authors: Roy Arsan <roy@splunk.com>, Bill Bartlett <bbartlett@splunk.com>, Tarik Makota <tmak@amazon.com>
+    Last Modified: 29 Nov, 2017
+    Authors: Roy Arsan <roy@splunk.com>, Tarik Makota <tmak@amazon.com>
 
 Parameters:
     KinesisStreamName: 

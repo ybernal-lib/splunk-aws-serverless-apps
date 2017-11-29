@@ -7,15 +7,15 @@ Description: >
     along with a Lambda permission to grant DynamoDB permission to invoke this function. 
     DynamoDB must be in same region as the region where this stack is created.
 
-    Last Modified: 12 Oct, 2017
-    Authors: Roy Arsan <roy@splunk.com>, Bill Bartlett <bbartlett@splunk.com>, Tarik Makota <tmak@amazon.com>
+    Last Modified: 29 Nov, 2017
+    Authors: Roy Arsan <roy@splunk.com>, Tarik Makota <tmak@amazon.com>
 
 Parameters:
   DynamoDBTableName: 
     Type: "String"
     Description: "Name of DynamoDB table. The Lambda function will be invoked whenever this table is updated."
     
-  DynamoDBStreamARN: 
+  DynamoDBStreamARN:
     Type: "String"
     Description: "ARN of DynamoDB table Stream. The Lambda function will be invoked whenever this stream is updated."
   

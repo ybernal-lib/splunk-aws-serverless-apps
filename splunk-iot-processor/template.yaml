@@ -1,12 +1,12 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: 'AWS::Serverless-2016-10-31'
 Description: >
-    Serverless application to respond to events from the IoT trigger and send to Splunk HTTP Event Collector (HEC).
+    Serverless application to respond to events from IoT and send to Splunk HTTP Event Collector (HEC).
 
-    This SAM template creates the Lambda function with its IAM execution role, 
+    This SAM template creates the Lambda function with its IAM execution role.
 
-    Last Modified: 06 Oct, 2017
-    Authors: Roy Arsan <roy@splunk.com>, Bill Bartlett <bbartlett@splunk.com>, Tarik Makota <tmak@amazon.com>
+    Last Modified: 29 Nov, 2017
+    Authors: Roy Arsan <roy@splunk.com>, Tarik Makota <tmak@amazon.com>
 
 Parameters:
     IoTTopicFilter:

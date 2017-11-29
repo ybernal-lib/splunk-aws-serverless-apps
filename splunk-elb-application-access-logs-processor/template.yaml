@@ -1,25 +1,28 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: 'AWS::Serverless-2016-10-31'
 Description: >
-    Serverless application to Stream Application ALB access logs from S3 to Splunk's HTTP event collector (HEC).
+    Serverless application to stream access logs of Application ELB from S3 to Splunk HTTP Event Collector (HEC).
 
-    This SAM template creates the Lambda function and S3 Bucket. Place your ALB logs into this newly created S3 Bucket.
-    Last Modified: 12 Oct, 2017
-    Authors: Roy Arsan <roy@splunk.com>, Bill Bartlett <bbartlett@splunk.com>, Tarik Makota <tmak@amazon.com>
+    This SAM template creates the Lambda function and S3 Bucket. Direct your load balancers access logs to this newly created S3 Bucket.
+    To enable access logs on application load balancers, refer to AWS docs:
+    http://docs.aws.amazon.com/elasticloadbalancing/latest/application/load-balancer-access-logs.html#enable-access-logging
+
+    Last Modified: 29 Nov, 2017
+    Authors: Roy Arsan <roy@splunk.com>, Tarik Makota <tmak@amazon.com>
 
 Parameters:
   S3ALBLogsBucketName:
     Type: "String"
-    Description: "Please enter the S3 bucket that will serve as the event source. The bucket will be created for you."
+    Description: "Name of S3 bucket that will store access logs. This bucket will be created for you. Name must be unique across all existing bucket names in Amazon S3."
   
   S3Prefix:
     Type: "String"
-    Description: "Enter an optional prefix to limit the notifications to objects with keys that start with matching characters. e.g. uploadedImages/"
+    Description: "Optional prefix to limit the notifications to objects with keys that start with matching characters. e.g. uploadedImages/"
     Default: ""
 
   S3Suffix:
     Type: "String"
-    Description: "Enter an optional suffix to limit the notifications to objects with keys that end with matching characters.. e.g. .jpge"
+    Description: "Optional suffix to limit the notifications to objects with keys that end with matching characters.. e.g. .jpg"
     Default: ""
 
   SplunkHttpEventCollectorURL:

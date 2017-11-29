@@ -4,10 +4,11 @@ Description: >
     Serverless application example that logs events from Lambda to Splunk HTTP Event Collector (HEC).
 
     This SAM template creates a Lambda function with its IAM execution role. The created Lambda
-    function includes an HEC Client JavaScript library for logging to Splunk.
+    function includes the JavaScript client library for logging to Splunk HEC:
+    https://github.com/splunk/splunk-javascript-logging
 
     Last Modified: 06 Oct, 2017
-    Authors: Roy Arsan <roy@splunk.com>, Bill Bartlett <bbartlett@splunk.com>, Tarik Makota <tmak@amazon.com>
+    Authors: Roy Arsan <roy@splunk.com>, Tarik Makota <tmak@amazon.com>
 
 Parameters:
     SplunkHttpEventCollectorURL:
