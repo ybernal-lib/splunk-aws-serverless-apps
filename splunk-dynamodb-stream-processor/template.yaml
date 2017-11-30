@@ -26,8 +26,7 @@ Parameters:
 
   DynamoDBStreamStartingPosition:
     Type: "String"
-    Description: "The position in the stream where AWS Lambda should start reading. For more information, see ShardIteratorType in the Amazon DynamoDB API Reference."
-    AllowedValues: [ "TRIM_HORIZON", "LATEST"]
+    Description: "The position in the stream where AWS Lambda should start reading. Allowed values are 'TRIM_HORIZON' or 'LATEST'. For more information, see ShardIteratorType in the Amazon DynamoDB API Reference."
     Default: "LATEST" 
 
   SplunkHttpEventCollectorURL:
