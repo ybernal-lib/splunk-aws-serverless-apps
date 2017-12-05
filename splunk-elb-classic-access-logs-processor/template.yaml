@@ -19,12 +19,10 @@ Parameters:
   S3Prefix:
     Type: "String"
     Description: "Optional prefix to limit the notifications to objects with keys that start with matching characters. e.g. uploadedImages/"
-    Default: ""
 
   S3Suffix:
     Type: "String"
     Description: "Optional suffix to limit the notifications to objects with keys that end with matching characters.. e.g. .jpg"
-    Default: ""
 
   SplunkHttpEventCollectorURL:
     Type: "String"
