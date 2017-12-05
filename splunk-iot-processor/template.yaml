@@ -16,6 +16,7 @@ Parameters:
     IoTSqlVersion:
       Type: "String"
       Description: "Version of the SQL rule engine. Allowed values are '2016-03-23' or '2015-10-08'"
+      Default: "2016-03-23"
 
     SplunkHttpEventCollectorURL:
       Type: "String"
