@@ -1,7 +1,7 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: 'AWS::Serverless-2016-10-31'
 Description: >
-    Serverless application to stream events from AWS DynamoDB Table to Splunk HTTP Event Collector (HEC).
+    Serverless application to stream events from AWS DynamoDB Stream to Splunk HTTP Event Collector (HEC).
 
     This SAM template creates the Lambda function with its IAM execution role, a subscription to DynamoDB table
     along with a Lambda permission to grant DynamoDB permission to invoke this function. 
