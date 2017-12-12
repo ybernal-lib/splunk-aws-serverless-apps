@@ -23,8 +23,8 @@ Parameters:
 
   S3Suffix:
     Type: "String"
-    Description: "Optional suffix to limit the notifications to objects with keys that end with matching characters.. e.g. .jpg"
-    Default: ""
+    Description: "Optional suffix to limit the notifications to objects with keys that end with matching characters. e.g. .jpg"
+    Default: ".log.gz"
 
   SplunkHttpEventCollectorURL:
     Type: "String"
@@ -40,7 +40,7 @@ Outputs:
       Value: !Ref SplunkALBProcessorFunction
 
 Resources:
-   SplunkALBProcessorFunction:
+  SplunkALBProcessorFunction:
     Type: 'AWS::Serverless::Function'
     Properties:
       Description: Stream ALB events from S3 to Splunk HTTP event collector
@@ -71,7 +71,7 @@ Resources:
                   -
                     Name: suffix
                     Value: !Sub "${S3Suffix}"
-   Bucket:
+  Bucket:
     Type: AWS::S3::Bucket
     Properties:
       BucketName: !Ref S3ALBLogsBucketName
