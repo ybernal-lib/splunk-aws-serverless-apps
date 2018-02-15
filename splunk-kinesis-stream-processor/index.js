@@ -63,7 +63,10 @@ exports.handler = (event, context, callback) => {
                 time: Date.now(),
                 host: 'serverless',
                 source: `lambda:${context.functionName}`,
-                sourcetype: 'httpevent',
+                /* Set sourcetype and index in HEC token configuration for now. Should be configurable from Splunk. 
+                Currently when sourcetype is assigned here, the assigned sourcetype has precedence over HEC token default 
+                sourcetype. */
+                //sourcetype: 'httpevent',
                 //index: 'main',
             },
         });
