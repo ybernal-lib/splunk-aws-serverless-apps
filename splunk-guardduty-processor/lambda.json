@@ -1,0 +1,30 @@
+{
+  "lambda": {
+    "FunctionName": "splunk-guardduty-processor",
+    "Handler": "index.handler",
+    "Runtime": "nodejs6.10",
+    "Description": "Stream findings from GuardDuty to Splunk's HTTP event collector",
+    "Environment": {
+      "Variables": {
+        "SPLUNK_HEC_URL": "<enter value here>",
+        "SPLUNK_HEC_TOKEN": "<enter value here>"
+      }
+    },
+    "MemorySize": 512,
+    "Timeout": 10
+  },
+  "version": "0.8.1",
+  "license": "CC0-1.0",
+  "tags": [
+    "nodejs",
+    "splunk",
+    "logging",
+    "guardduty"
+  ],
+  "authors": [
+    "Nicolas Stone <nstone@splunk.com> (https://www.splunk.com)"
+  ],
+  "roleTemplates": [
+  ]
+}
+

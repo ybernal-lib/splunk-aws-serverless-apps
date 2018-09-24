@@ -1,0 +1,42 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: 'AWS::Serverless-2016-10-31'
+Description: >
+    Serverless application example that streams findings from GuardDuty to Splunk's HTTP event collector.
+
+    This SAM template creates a Lambda function with its IAM execution role. The created Lambda
+    function includes the JavaScript client library for logging to Splunk HEC:
+    https://github.com/splunk/splunk-javascript-logging
+
+    Last Modified: 24 Sep, 2018
+    Authors: Nicolas Stone <nstone@splunk.com>
+
+Parameters:
+    SplunkHttpEventCollectorURL:
+      Type: "String"
+      Description: "URL address of your Splunk HTTP event collector endpoint"
+
+    SplunkHttpEventCollectorToken:
+      Type: "String"
+      Description: "Token of your Splunk HTTP event collector endpoint"
+
+Outputs:
+    SplunkLoggingFunction:
+      Description: "Stream findings from GuardDuty to Splunk's HTTP event collector"
+      Value: !GetAtt SplunkGuardDutyProcessorFunction.Arn
+
+Resources:
+    SplunkGuardDutyProcessorFunction:
+      Type: 'AWS::Serverless::Function'
+      Properties:
+        Handler: index.handler
+        Runtime: nodejs6.10
+        CodeUri: ./splunk-guardduty-processor.zip
+        Description: Stream findings from GuardDuty to Splunk's HTTP event collector
+        MemorySize: 512
+        Timeout: 30
+        Environment:
+          Variables:
+            SPLUNK_HEC_URL: !Ref SplunkHttpEventCollectorURL
+            SPLUNK_HEC_TOKEN: !Ref SplunkHttpEventCollectorToken
+
+  
