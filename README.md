@@ -155,6 +155,7 @@ Successfully processed 2 log event(s).
 ## Authors
 * **Roy Arsan** - [rarsan](https://github.com/rarsan)
 * **Tarik Makota** - [tmakota](https://github.com/tmakota)
+* **Nicolas Stone** - [nstonesplunk](https://github.com/nstonesplunk)
 
 
 See also the list of [contributors](https://github.com/splunk/splunk-aws-lambda-blueprints/contributors) who participated in this project.
