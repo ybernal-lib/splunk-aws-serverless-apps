@@ -1,14 +1,14 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: 'AWS::Serverless-2016-10-31'
 Description: >
-    Serverless application example that logs events from Lambda to Splunk HTTP Event Collector (HEC).
+    Serverless application example that streams findings from GuardDuty to Splunk's HTTP event collector.
 
     This SAM template creates a Lambda function with its IAM execution role. The created Lambda
     function includes the JavaScript client library for logging to Splunk HEC:
     https://github.com/splunk/splunk-javascript-logging
 
-    Last Modified: 06 Oct, 2017
-    Authors: Roy Arsan <roy@splunk.com>, Tarik Makota <tmak@amazon.com>
+    Last Modified: 24 Sep, 2018
+    Authors: Nicolas Stone <nstone@splunk.com>
 
 Parameters:
     SplunkHttpEventCollectorURL:
@@ -21,17 +21,17 @@ Parameters:
 
 Outputs:
     SplunkLoggingFunction:
-      Description: "Splunk Logging Lambda Function ARN"
-      Value: !GetAtt SplunkLoggingFunction.Arn
+      Description: "Stream findings from GuardDuty to Splunk's HTTP event collector"
+      Value: !GetAtt SplunkGuardDutyProcessorFunction.Arn
 
 Resources:
-    SplunkLoggingFunction:
+    SplunkGuardDutyProcessorFunction:
       Type: 'AWS::Serverless::Function'
       Properties:
         Handler: index.handler
         Runtime: nodejs10.x
-        CodeUri: ./splunk-logging.zip
-        Description: Demonstrates logging from AWS Lambda code to Splunk HTTP event collector
+        CodeUri: ./splunk-guardduty-processor.zip
+        Description: Stream findings from GuardDuty to Splunk's HTTP event collector
         MemorySize: 512
         Timeout: 30
         Environment:

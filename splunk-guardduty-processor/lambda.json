@@ -1,9 +1,9 @@
 {
   "lambda": {
-    "FunctionName": "splunk-logging",
+    "FunctionName": "splunk-guardduty-processor",
     "Handler": "index.handler",
     "Runtime": "nodejs10.x",
-    "Description": "Demonstrates logging from AWS Lambda code to Splunk's HTTP event collector",
+    "Description": "Stream findings from GuardDuty to Splunk's HTTP event collector",
     "Environment": {
       "Variables": {
         "SPLUNK_HEC_URL": "<enter value here>",
@@ -18,11 +18,11 @@
   "tags": [
     "nodejs",
     "splunk",
-    "logging"
+    "logging",
+    "guardduty"
   ],
   "authors": [
-    "Roy Arsan <roy@splunk.com> (https://www.splunk.com)",
-    "Glenn Block <gblock@splunk.com> (https://www.splunk.com)"
+    "Nicolas Stone <nstone@splunk.com> (https://www.splunk.com)"
   ],
   "roleTemplates": [
   ]
